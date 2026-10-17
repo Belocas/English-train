@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f172a">
+  <title>Quem Sou Eu? - Verb to Be | English Train</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Fredoka', cursive, sans-serif; user-select: none; -webkit-user-select: none; }
+    button:focus-visible, a:focus-visible { outline: 3px solid #c4b5fd; outline-offset: 4px; }
+    .bounce-emoji { animation: bounce 1.5s infinite alternate; }
+    @keyframes bounce { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-900 p-3 text-white sm:p-6">
+  <main class="mx-auto flex min-h-[calc(100vh-1.5rem)] w-full max-w-3xl flex-col overflow-hidden rounded-3xl border-4 border-violet-500/30 bg-slate-800 p-4 text-center shadow-2xl sm:min-h-[600px] sm:p-7">
+    <section id="start-screen" class="my-auto flex flex-col items-center justify-center space-y-5 py-4">
+      <a href="index.html" class="self-start rounded-full bg-slate-700 px-4 py-2 text-sm font-bold text-slate-200 transition hover:bg-slate-600">← Menu inicial</a>
+      <div class="bounce-emoji text-7xl" aria-hidden="true">🕵️‍♀️🔎</div>
+      <div>
+        <p class="text-sm font-bold uppercase tracking-[0.25em] text-violet-300">English Train · 2.º ano</p>
+        <h1 class="mt-2 text-4xl font-black tracking-wide text-violet-300 drop-shadow-md sm:text-5xl">QUEM SOU EU?</h1>
+        <p class="mt-3 text-lg text-indigo-200">Resolve as pistas e treina o <em>verb to be</em>!</p>
+      </div>
+      <div class="w-full max-w-lg rounded-2xl border border-violet-500/20 bg-slate-900/60 p-4 text-left text-sm text-slate-300">
+        <p class="mb-2 text-center text-base font-bold text-violet-300">🔎 A TUA MISSÃO</p>
+        <ul class="space-y-1.5 pl-5">
+          <li class="list-disc">Na primeira fase, lê as pistas e descobre quem é.</li>
+          <li class="list-disc">Na segunda fase, completa cada frase com <strong class="text-white">am</strong>, <strong class="text-white">is</strong> ou <strong class="text-white">are</strong> e encontra a imagem.</li>
+          <li class="list-disc">São 7 pistas por fase. Cada resposta certa vale uma estrela!</li>
+        </ul>
+      </div>
+      <button id="start-button" type="button" class="rounded-full bg-gradient-to-r from-violet-400 to-fuchsia-400 px-9 py-4 text-xl font-extrabold text-slate-900 shadow-lg shadow-violet-500/20 transition hover:scale-105 hover:from-violet-300 hover:to-fuchsia-300 active:scale-95">COMEÇAR A MISSÃO 🕵️</button>
+    </section>
+
+    <section id="game-screen" class="hidden flex-1 flex-col justify-between" aria-labelledby="clue-title">
+      <div>
+        <header class="mb-4 flex items-center justify-between gap-2 rounded-2xl border border-slate-700 bg-slate-900/80 px-3 py-3 sm:px-4">
+          <a href="index.html" class="shrink-0 rounded-full bg-slate-700 px-3 py-2 text-sm font-bold text-slate-200 transition hover:bg-slate-600">Menu</a>
+          <p id="round-count" class="text-sm font-bold text-violet-300 sm:text-base" aria-live="polite">Fase 1 · Pista 1 de 7</p>
+          <p id="score-display" class="shrink-0 text-base font-bold text-emerald-400 sm:text-lg" aria-label="Pontuação">⭐ 0</p>
+        </header>
+
+        <div class="mb-5 h-3 w-full overflow-hidden rounded-full border border-slate-700 bg-slate-900" role="progressbar" aria-label="Progresso da missão" aria-valuemin="0" aria-valuemax="21" aria-valuenow="0">
+          <div id="progress-bar" class="h-full w-0 rounded-full bg-gradient-to-r from-indigo-500 to-violet-300 transition-all duration-300"></div>
+        </div>
+        <div id="phase-label" class="mb-3 inline-block rounded-full bg-violet-600 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-violet-100 shadow-inner">Fase 1 · Detetive de pistas</div>
+        <h2 id="clue-title" class="text-xl font-bold text-white sm:text-2xl">Lê a pista e escolhe a imagem certa!</h2>
+        <p id="clue-text" class="mx-auto my-4 max-w-2xl rounded-3xl border-2 border-violet-500/20 bg-slate-900/60 px-4 py-5 text-xl font-bold leading-relaxed text-violet-100 sm:text-2xl" lang="en"></p>
+        <div id="verb-options" class="mx-auto mb-4 hidden max-w-xl grid-cols-3 gap-3" role="group" aria-label="Escolhe a forma do verbo to be"></div>
+        <p id="feedback" class="min-h-8 text-lg font-bold" role="status" aria-live="polite"></p>
+        <div id="image-options" class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4" role="group" aria-label="Imagens das personagens"></div>
+      </div>
+      <button id="next-button" type="button" class="mx-auto mt-5 hidden rounded-full bg-violet-400 px-7 py-3 font-extrabold text-slate-900 transition hover:bg-violet-300">Próxima pista →</button>
+    </section>
+
+    <section id="end-screen" class="my-auto hidden flex-col items-center justify-center space-y-5 py-4" aria-labelledby="end-title">
+      <a href="index.html" class="self-start rounded-full bg-slate-700 px-4 py-2 text-sm font-bold text-slate-200 transition hover:bg-slate-600">← Menu inicial</a>
+      <div id="final-emoji" class="bounce-emoji text-8xl" aria-hidden="true">🏆</div>
+      <div>
+        <h2 id="end-title" class="text-3xl font-black text-violet-300">CASO RESOLVIDO!</h2>
+        <p class="mt-2 text-lg text-slate-300">És um detetive do <em>verb to be</em>!</p>
+      </div>
+      <div class="my-2 w-full max-w-sm rounded-3xl border border-violet-500/30 bg-slate-900/80 p-6">
+        <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Pontuação final</p>
+        <p id="final-score" class="my-1 text-5xl font-black text-emerald-400">0 pontos</p>
+        <p id="accuracy-text" class="mt-2 text-sm font-semibold text-slate-300">Resolviste 0 de 21 desafios.</p>
+      </div>
+      <button id="replay-button" type="button" class="rounded-full bg-gradient-to-r from-violet-400 to-fuchsia-400 px-8 py-4 text-lg font-extrabold text-slate-900 shadow-lg shadow-violet-500/20 transition hover:scale-105 hover:from-violet-300 hover:to-fuchsia-300 active:scale-95">JOGAR OUTRA VEZ 🔄</button>
+    </section>
+  </main>
+
+  <script>
+    const cases = [
+      { subject: "I", be: "am", first: "I am a happy child.", second: "I am at school.", image: "🧒🎒", label: "a happy child at school" },
+      { subject: "you", be: "are", first: "You are my kind friend.", second: "You are ready to play.", image: "🫵🙂", label: "a kind friend" },
+      { subject: "he", be: "is", first: "He is a fast football player.", second: "He is on the team.", image: "👦⚽", label: "a boy who plays football" },
+      { subject: "she", be: "is", first: "She is a creative artist.", second: "She is in the art room.", image: "👧🎨", label: "a girl who paints" },
+      { subject: "it", be: "is", first: "It is a sleepy cat.", second: "It is on the chair.", image: "🐱💤", label: "a sleepy cat" },
+      { subject: "we", be: "are", first: "We are good friends.", second: "We are in the same team.", image: "🧒🤝🧒", label: "two friends on a team" },
+      { subject: "they", be: "are", first: "They are playful puppies.", second: "They are in the garden.", image: "🐶🐶🌳", label: "playful puppies in a garden" }
+    ];
+    const beForms = ["am", "is", "are"];
+    const totalChallenges = 21;
+    const startScreen = document.getElementById("start-screen");
+    const gameScreen = document.getElementById("game-screen");
+    const endScreen = document.getElementById("end-screen");
+    const clueText = document.getElementById("clue-text");
+    const clueTitle = document.getElementById("clue-title");
+    const phaseLabel = document.getElementById("phase-label");
+    const roundCount = document.getElementById("round-count");
+    const verbOptions = document.getElementById("verb-options");
+    const imageOptions = document.getElementById("image-options");
+    const feedback = document.getElementById("feedback");
+    const nextButton = document.getElementById("next-button");
+    const progressBar = document.getElementById("progress-bar");
+    const progressTrack = progressBar.parentElement;
+    let phase = 1;
+    let questionIndex = 0;
+    let phaseCases = [];
+    let score = 0;
+    let correctChallenges = 0;
+    let completedChallenges = 0;
+    let canAnswer = true;
+
+    function shuffle(items) {
+      const shuffled = [...items];
+      for (let index = shuffled.length - 1; index > 0; index--) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+      }
+      return shuffled;
+    }
+
+    function startGame() {
+      phase = 1;
+      questionIndex = 0;
+      phaseCases = shuffle(cases);
+      score = 0;
+      correctChallenges = 0;
+      completedChallenges = 0;
+      document.getElementById("score-display").textContent = "⭐ 0";
+      startScreen.classList.add("hidden");
+      endScreen.classList.add("hidden");
+      gameScreen.classList.remove("hidden");
+      gameScreen.classList.add("flex");
+      loadChallenge();
+    }
+
+    function loadChallenge() {
+      canAnswer = true;
+      const currentCase = phaseCases[questionIndex];
+      const isVerbPhase = phase === 2;
+      roundCount.textContent = `Fase ${phase} · Pista ${questionIndex + 1} de ${phaseCases.length}`;
+      phaseLabel.textContent = isVerbPhase ? "Fase 2 · Completa a pista" : "Fase 1 · Detetive de pistas";
+      clueTitle.textContent = isVerbPhase ? "Escolhe a forma certa do verbo!" : "Lê a pista e escolhe a imagem certa!";
+      clueText.textContent = isVerbPhase
+        ? `${currentCase.subject[0].toUpperCase()}${currentCase.subject.slice(1)} ___ ${currentCase.first.split(" ").slice(2).join(" ")}`
+        : `${currentCase.first} ${currentCase.second}`;
+      feedback.textContent = isVerbPhase ? "Qual palavra completa a frase?" : "Quem será? Toca na imagem certa.";
+      feedback.className = "min-h-8 text-lg font-bold text-indigo-200";
+      nextButton.classList.add("hidden");
+      imageOptions.replaceChildren();
+      verbOptions.replaceChildren();
+
+      if (isVerbPhase) {
+        imageOptions.classList.add("hidden");
+        verbOptions.classList.remove("hidden");
+        verbOptions.classList.add("grid");
+        shuffle(beForms).forEach((form) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.textContent = form;
+          button.className = "min-h-16 rounded-2xl border-2 border-violet-400/50 bg-violet-600/40 px-3 py-3 text-2xl font-extrabold text-white shadow-md transition hover:border-fuchsia-300 hover:bg-violet-500/60 active:scale-95";
+          button.addEventListener("click", () => chooseVerb(form, currentCase));
+          verbOptions.appendChild(button);
+        });
+        verbOptions.firstElementChild.focus();
+      } else {
+        verbOptions.classList.add("hidden");
+        verbOptions.classList.remove("grid");
+        imageOptions.classList.remove("hidden");
+        showImageOptions(currentCase);
+      }
+      updateProgress();
+    }
+
+    function showImageOptions(currentCase) {
+      const distractors = shuffle(cases.filter((item) => item !== currentCase)).slice(0, 3);
+      shuffle([currentCase, ...distractors]).forEach((item) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "flex min-h-32 flex-col items-center justify-center rounded-2xl border-2 border-slate-600 bg-slate-900/70 p-3 text-center transition hover:border-violet-300 hover:bg-slate-700 active:scale-95";
+        button.setAttribute("aria-label", item.label);
+        button.innerHTML = `<span class="text-5xl" aria-hidden="true">${item.image}</span><span class="mt-2 text-xs font-semibold leading-snug text-indigo-100 sm:text-sm">${item.label}</span>`;
+        button.addEventListener("click", () => chooseImage(item, currentCase, button));
+        imageOptions.appendChild(button);
+      });
+      imageOptions.firstElementChild.focus();
+    }
+
+    function chooseVerb(selected, currentCase) {
+      if (!canAnswer) return;
+      if (selected !== currentCase.be) {
+        feedback.textContent = "Quase! Lê outra vez e tenta mais uma vez. 💪";
+        feedback.className = "min-h-8 text-lg font-bold text-amber-200";
+        return;
+      }
+      canAnswer = false;
+      awardPoint();
+      clueText.textContent = `${currentCase.first} ${currentCase.second}`;
+      feedback.textContent = "Muito bem! Agora descobre a imagem desta pista. 🔎";
+      feedback.className = "min-h-8 text-lg font-bold text-emerald-300";
+      verbOptions.classList.add("hidden");
+      verbOptions.classList.remove("grid");
+      canAnswer = true;
+      imageOptions.classList.remove("hidden");
+      showImageOptions(currentCase);
+    }
+
+    function chooseImage(selected, currentCase, selectedButton) {
+      if (!canAnswer) return;
+      if (selected !== currentCase) {
+        feedback.textContent = "Ainda não! Lê a pista com atenção e tenta outra imagem. 🔎";
+        feedback.className = "min-h-8 text-lg font-bold text-amber-200";
+        return;
+      }
+      canAnswer = false;
+      awardPoint();
+      [...imageOptions.querySelectorAll("button")].forEach((button) => { button.disabled = true; });
+      selectedButton.classList.remove("border-slate-600", "bg-slate-900/70");
+      selectedButton.classList.add("border-emerald-400", "bg-emerald-600/30");
+      feedback.textContent = "Pista resolvida! Excelente trabalho, detetive! ⭐";
+      feedback.className = "min-h-8 text-lg font-bold text-emerald-300";
+      nextButton.textContent = phase === 1 && questionIndex === phaseCases.length - 1
+        ? "Começar a fase 2 →"
+        : phase === 2 && questionIndex === phaseCases.length - 1
+          ? "Ver resultado 🏆"
+          : "Próxima pista →";
+      nextButton.classList.remove("hidden");
+      nextButton.focus();
+    }
+
+    function awardPoint() {
+      score += 100;
+      correctChallenges++;
+      completedChallenges++;
+      document.getElementById("score-display").textContent = `⭐ ${score}`;
+      updateProgress();
+    }
+
+    function updateProgress() {
+      progressBar.style.width = `${(completedChallenges / totalChallenges) * 100}%`;
+      progressTrack.setAttribute("aria-valuenow", String(completedChallenges));
+    }
+
+    function nextChallenge() {
+      if (phase === 1 && questionIndex === phaseCases.length - 1) {
+        phase = 2;
+        questionIndex = 0;
+        phaseCases = shuffle(cases);
+        loadChallenge();
+        return;
+      }
+      if (phase === 2 && questionIndex === phaseCases.length - 1) {
+        endGame();
+        return;
+      }
+      questionIndex++;
+      loadChallenge();
+    }
+
+    function endGame() {
+      gameScreen.classList.add("hidden");
+      gameScreen.classList.remove("flex");
+      endScreen.classList.remove("hidden");
+      endScreen.classList.add("flex");
+      document.getElementById("final-score").textContent = `${score} pontos`;
+      document.getElementById("accuracy-text").textContent = `Respondeste corretamente a ${correctChallenges} de ${totalChallenges} desafios.`;
+      document.getElementById("final-emoji").textContent = correctChallenges === totalChallenges ? "🏆" : "🕵️‍♀️";
+      document.getElementById("replay-button").focus();
+    }
+
+    document.getElementById("start-button").addEventListener("click", startGame);
+    document.getElementById("replay-button").addEventListener("click", startGame);
+    nextButton.addEventListener("click", nextChallenge);
+  </script>
+</body>
+</html>

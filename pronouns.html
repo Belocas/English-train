@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f172a">
+  <title>Pronomes em Ação - English Train</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Fredoka', cursive, sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    button:focus-visible, a:focus-visible {
+      outline: 3px solid #fbbf24;
+      outline-offset: 4px;
+    }
+    .bounce-emoji {
+      animation: bounce 1.5s infinite alternate;
+    }
+    @keyframes bounce {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-10px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-900 p-4 text-white sm:p-6">
+  <main class="mx-auto flex min-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border-4 border-amber-500/30 bg-slate-800 p-5 text-center shadow-2xl sm:min-h-[580px] sm:p-7">
+    <section id="start-screen" class="my-auto flex flex-col items-center justify-center space-y-5 py-4">
+      <a href="index.html" class="self-start rounded-full bg-slate-700 px-4 py-2 text-sm font-bold text-slate-200 transition hover:bg-slate-600">← Menu inicial</a>
+      <div class="bounce-emoji text-7xl" aria-hidden="true">🧑‍🤝‍🧑💭</div>
+      <div>
+        <p class="text-sm font-bold uppercase tracking-[0.25em] text-amber-300">English Train · 2.º ano</p>
+        <h1 class="mt-2 text-4xl font-black tracking-wide text-amber-400 drop-shadow-md sm:text-5xl">PRONOMES EM AÇÃO</h1>
+        <p class="mt-3 text-lg text-indigo-200">Olha para a imagem e escolhe o pronome certo!</p>
+      </div>
+
+      <div class="w-full max-w-md rounded-2xl border border-indigo-500/20 bg-slate-900/60 p-4 text-left text-sm text-slate-300">
+        <p class="mb-2 text-center text-base font-bold text-amber-300">🎯 O TEU DESAFIO</p>
+        <ul class="space-y-1.5 pl-5">
+          <li class="list-disc">14 desafios por partida, escolhidos de um banco de 42 perguntas.</li>
+          <li class="list-disc">As perguntas não se repetem nas duas partidas anteriores.</li>
+          <li class="list-disc">Treina: <span class="font-bold text-white">I, you, he, she, it, we, they</span>.</li>
+        </ul>
+      </div>
+
+      <button id="start-button" type="button" class="rounded-full bg-gradient-to-r from-amber-500 to-orange-400 px-9 py-4 text-xl font-extrabold text-slate-900 shadow-lg shadow-amber-500/20 transition hover:scale-105 hover:from-amber-400 hover:to-orange-300 active:scale-95">
+        COMEÇAR A JOGAR 🎮
+      </button>
+    </section>
+
+    <section id="game-screen" class="hidden flex-1 flex-col justify-between" aria-labelledby="question-prompt">
+      <div>
+        <header class="mb-4 flex items-center justify-between gap-2 rounded-2xl border border-slate-700 bg-slate-900/80 px-3 py-3 sm:px-4">
+          <a href="index.html" class="shrink-0 rounded-full bg-slate-700 px-3 py-2 text-sm font-bold text-slate-200 transition hover:bg-slate-600">Menu</a>
+          <p id="question-count" class="text-sm font-bold text-amber-300 sm:text-base" aria-live="polite">Desafio 1 de 14</p>
+          <p id="score-display" class="shrink-0 text-base font-bold text-emerald-400 sm:text-lg" aria-label="Pontuação">⭐ 0</p>
+        </header>
+
+        <div class="mb-5 h-3 w-full overflow-hidden rounded-full border border-slate-700 bg-slate-900" role="progressbar" aria-label="Progresso do jogo" aria-valuemin="0" aria-valuemax="14" aria-valuenow="0">
+          <div id="progress-bar" class="h-full w-0 rounded-full bg-gradient-to-r from-indigo-500 to-amber-400 transition-all duration-300"></div>
+        </div>
+
+        <div class="mb-4 inline-block rounded-full bg-indigo-600 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-indigo-100 shadow-inner">Escolhe o pronome</div>
+        <div id="visual-card" class="mb-4 flex min-h-44 flex-col items-center justify-center rounded-3xl border-2 border-indigo-500/20 bg-slate-900/60 px-4 py-5">
+          <div id="visual-emoji" class="text-7xl sm:text-8xl" aria-hidden="true"></div>
+          <p id="visual-description" class="mt-3 text-base font-semibold text-indigo-200"></p>
+        </div>
+        <h2 id="question-prompt" class="flex min-h-16 items-center justify-center px-2 text-xl font-bold text-slate-100 sm:text-2xl">Qual pronome escolhes?</h2>
+      </div>
+
+      <div>
+        <div id="options-grid" class="mt-4 grid grid-cols-2 gap-3" role="group" aria-label="Opções de pronomes"></div>
+        <p id="feedback" class="mt-4 min-h-8 text-lg font-bold" role="status" aria-live="polite"></p>
+        <button id="next-button" type="button" class="hidden mx-auto mt-2 rounded-full bg-amber-400 px-7 py-3 font-extrabold text-slate-900 transition hover:bg-amber-300 focus-visible:outline-amber-200">
+          Próximo desafio →
+        </button>
+      </div>
+    </section>
+
+    <section id="end-screen" class="my-auto hidden flex-col items-center justify-center space-y-5 py-4" aria-labelledby="end-title">
+      <a href="index.html" class="self-start rounded-full bg-slate-700 px-4 py-2 text-sm font-bold text-slate-200 transition hover:bg-slate-600">← Menu inicial</a>
+      <div id="final-emoji" class="bounce-emoji text-8xl" aria-hidden="true">🏆</div>
+      <div>
+        <h2 id="end-title" class="text-3xl font-black text-amber-400">BRILHANTE!</h2>
+        <p class="mt-2 text-lg text-slate-300">Terminaste os desafios dos pronomes!</p>
+      </div>
+      <div class="my-2 w-full max-w-sm rounded-3xl border border-indigo-500/30 bg-slate-900/80 p-6">
+        <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Pontuação final</p>
+        <p id="final-score" class="my-1 text-5xl font-black text-emerald-400">0 pontos</p>
+        <p id="accuracy-text" class="mt-2 text-sm font-semibold text-slate-300">Acertaste em 0 de 14 desafios.</p>
+      </div>
+      <button id="replay-button" type="button" class="rounded-full bg-gradient-to-r from-amber-500 to-orange-400 px-8 py-4 text-lg font-extrabold text-slate-900 shadow-lg shadow-amber-500/20 transition hover:scale-105 hover:from-amber-400 hover:to-orange-300 active:scale-95">
+        JOGAR OUTRA VEZ 🔄
+      </button>
+    </section>
+  </main>
+
+  <script>
+    const questions = [
+      { image: "🙋", description: "A pessoa que fala está a apontar para si.", answer: "I", options: ["I", "You", "He", "She"] },
+      { image: "👈🙂", description: "A pessoa está a falar diretamente contigo.", answer: "You", options: ["You", "I", "We", "They"] },
+      { image: "👦", description: "Estamos a falar de um rapaz.", answer: "He", options: ["He", "She", "It", "They"] },
+      { image: "👧", description: "Estamos a falar de uma rapariga.", answer: "She", options: ["She", "He", "It", "We"] },
+      { image: "⚽", description: "Estamos a falar de uma bola.", answer: "It", options: ["It", "He", "She", "They"] },
+      { image: "🧒🧒🧒", description: "Estamos a falar de outras crianças, não do nosso grupo.", answer: "They", options: ["They", "We", "You", "I"] },
+      { image: "🧑‍🤝‍🧑", description: "Eu e os meus amigos estamos juntos.", answer: "We", options: ["We", "They", "You", "He"] },
+      { image: "🙋‍♀️", description: "A pessoa que fala diz: «Eu!»", answer: "I", options: ["I", "You", "She", "They"] },
+      { image: "👉🧑", description: "Estamos a falar com uma pessoa à nossa frente.", answer: "You", options: ["You", "We", "He", "It"] },
+      { image: "👨", description: "Estamos a falar de um homem.", answer: "He", options: ["He", "She", "They", "I"] },
+      { image: "👩", description: "Estamos a falar de uma mulher.", answer: "She", options: ["She", "He", "You", "It"] },
+      { image: "🧸", description: "Estamos a falar de um ursinho de peluche.", answer: "It", options: ["It", "They", "He", "She"] },
+      { image: "👧👦", description: "Eu e o meu irmão estamos na fotografia.", answer: "We", options: ["We", "They", "He", "You"] },
+      { image: "🐶🐶", description: "Estamos a falar de dois cães.", answer: "They", options: ["They", "It", "We", "She"] },
+      { image: "🧒🗣️", description: "A criança fala sobre si própria.", answer: "I", options: ["I", "You", "He", "They"] },
+      { image: "🙋‍♂️", description: "O narrador levanta a mão para falar de si.", answer: "I", options: ["I", "We", "She", "It"] },
+      { image: "👆🙂", description: "A pessoa usa o pronome para falar dela própria.", answer: "I", options: ["I", "You", "He", "We"] },
+      { image: "🧑‍🎨", description: "O artista diz algo sobre si mesmo.", answer: "I", options: ["I", "They", "She", "It"] },
+      { image: "🫵👧", description: "A menina está a falar contigo.", answer: "You", options: ["You", "I", "She", "They"] },
+      { image: "🧑‍🏫👉", description: "A professora dirige-se a um aluno.", answer: "You", options: ["You", "We", "He", "It"] },
+      { image: "👂🗣️", description: "O colega está a falar com a pessoa que ouve.", answer: "You", options: ["You", "I", "She", "They"] },
+      { image: "👉👨‍👩‍👧‍👦", description: "A pessoa fala diretamente com a família.", answer: "You", options: ["You", "They", "We", "He"] },
+      { image: "🧑‍🚀", description: "Estamos a falar de um astronauta, um homem.", answer: "He", options: ["He", "She", "It", "We"] },
+      { image: "👨‍🍳", description: "Estamos a falar de um cozinheiro, um homem.", answer: "He", options: ["He", "She", "They", "I"] },
+      { image: "🧔", description: "Estamos a falar de um homem com barba.", answer: "He", options: ["He", "She", "It", "You"] },
+      { image: "👦⚽", description: "Estamos a falar de um rapaz a jogar à bola.", answer: "He", options: ["He", "She", "We", "They"] },
+      { image: "👩‍🚒", description: "Estamos a falar de uma bombeira.", answer: "She", options: ["She", "He", "It", "They"] },
+      { image: "👩‍⚕️", description: "Estamos a falar de uma médica.", answer: "She", options: ["She", "He", "We", "You"] },
+      { image: "👩‍🎤", description: "Estamos a falar de uma cantora.", answer: "She", options: ["She", "He", "It", "I"] },
+      { image: "👧📚", description: "Estamos a falar de uma rapariga com livros.", answer: "She", options: ["She", "He", "They", "We"] },
+      { image: "🚲", description: "Estamos a falar de uma bicicleta.", answer: "It", options: ["It", "He", "She", "They"] },
+      { image: "🍎", description: "Estamos a falar de uma maçã.", answer: "It", options: ["It", "They", "We", "He"] },
+      { image: "🐢", description: "Estamos a falar de uma tartaruga.", answer: "It", options: ["It", "She", "He", "I"] },
+      { image: "🎒", description: "Estamos a falar de uma mochila.", answer: "It", options: ["It", "You", "They", "She"] },
+      { image: "👭", description: "Eu e a minha amiga estamos juntas.", answer: "We", options: ["We", "They", "You", "She"] },
+      { image: "👨‍👩‍👧", description: "Eu e a minha família aparecemos na imagem.", answer: "We", options: ["We", "They", "It", "I"] },
+      { image: "🧑‍🤝‍🧑", description: "Eu e os meus colegas fazemos parte do grupo.", answer: "We", options: ["We", "They", "You", "He"] },
+      { image: "⚽🧒🧒", description: "Eu e os meus amigos jogamos juntos.", answer: "We", options: ["We", "They", "I", "It"] },
+      { image: "🐦🐦", description: "Estamos a falar de vários pássaros.", answer: "They", options: ["They", "It", "We", "She"] },
+      { image: "🚗🚗", description: "Estamos a falar de dois carros.", answer: "They", options: ["They", "It", "He", "You"] },
+      { image: "🧑‍🤝‍🧑🧑", description: "Estamos a falar de um grupo de outras pessoas.", answer: "They", options: ["They", "We", "I", "She"] },
+      { image: "🐱🐱🐱", description: "Estamos a falar de vários gatos.", answer: "They", options: ["They", "It", "We", "He"] }
+    ];
+
+    const startScreen = document.getElementById("start-screen");
+    const gameScreen = document.getElementById("game-screen");
+    const endScreen = document.getElementById("end-screen");
+    const optionsGrid = document.getElementById("options-grid");
+    const feedback = document.getElementById("feedback");
+    const nextButton = document.getElementById("next-button");
+    const progressBar = document.getElementById("progress-bar");
+    const progressTrack = progressBar.parentElement;
+
+    let roundQuestions = [];
+    let questionIndex = 0;
+    let score = 0;
+    let correctAnswers = 0;
+    let canAnswer = true;
+    const recentQuestionsKey = "englishTrainPronounsRecent-v2";
+
+    function shuffle(items) {
+      const shuffled = [...items];
+      for (let index = shuffled.length - 1; index > 0; index--) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+      }
+      return shuffled;
+    }
+
+    function startGame() {
+      let recentIndices = [];
+      try {
+        const storedIndices = JSON.parse(localStorage.getItem(recentQuestionsKey) || "[]");
+        recentIndices = Array.isArray(storedIndices)
+          ? storedIndices.filter((index) => Number.isInteger(index) && index >= 0 && index < questions.length)
+          : [];
+      } catch {
+        recentIndices = [];
+      }
+
+      const unseenIndices = shuffle(questions.map((_, index) => index).filter((index) => !recentIndices.includes(index)));
+      const selectedIndices = unseenIndices.slice(0, 14);
+      if (selectedIndices.length < 14) {
+        selectedIndices.push(...shuffle(questions.map((_, index) => index).filter((index) => !selectedIndices.includes(index))).slice(0, 14 - selectedIndices.length));
+      }
+      roundQuestions = selectedIndices.map((index) => questions[index]);
+      try {
+        localStorage.setItem(recentQuestionsKey, JSON.stringify([...recentIndices, ...selectedIndices].slice(-28)));
+      } catch {
+        // Continue normally when browser storage is unavailable.
+      }
+      questionIndex = 0;
+      score = 0;
+      correctAnswers = 0;
+      document.getElementById("score-display").textContent = "⭐ 0";
+      startScreen.classList.add("hidden");
+      endScreen.classList.add("hidden");
+      gameScreen.classList.remove("hidden");
+      gameScreen.classList.add("flex");
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      canAnswer = true;
+      const question = roundQuestions[questionIndex];
+      document.getElementById("question-count").textContent = `Desafio ${questionIndex + 1} de ${roundQuestions.length}`;
+      document.getElementById("visual-emoji").textContent = question.image;
+      document.getElementById("visual-description").textContent = question.description;
+      document.getElementById("question-prompt").textContent = "Qual pronome em inglês escolhes?";
+      feedback.textContent = "";
+      feedback.className = "mt-4 min-h-8 text-lg font-bold";
+      nextButton.classList.add("hidden");
+      progressBar.style.width = `${(questionIndex / roundQuestions.length) * 100}%`;
+      progressTrack.setAttribute("aria-valuenow", String(questionIndex));
+      optionsGrid.replaceChildren();
+
+      shuffle(question.options).forEach((option) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = option;
+        button.className = "min-h-14 rounded-2xl border-2 border-slate-600 bg-slate-700 px-3 py-3 text-xl font-extrabold text-white shadow-md transition hover:border-amber-400 hover:bg-slate-600 active:scale-95";
+        button.addEventListener("click", () => checkAnswer(button, option, question.answer));
+        optionsGrid.appendChild(button);
+      });
+      optionsGrid.firstElementChild.focus();
+    }
+
+    function checkAnswer(selectedButton, selected, correct) {
+      if (!canAnswer) return;
+      canAnswer = false;
+      const optionButtons = [...optionsGrid.querySelectorAll("button")];
+      optionButtons.forEach((button) => {
+        button.disabled = true;
+        button.classList.remove("hover:border-amber-400", "hover:bg-slate-600", "active:scale-95");
+      });
+
+      if (selected === correct) {
+        score += 100;
+        correctAnswers++;
+        selectedButton.className = "min-h-14 rounded-2xl border-2 border-emerald-400 bg-emerald-500 px-3 py-3 text-xl font-extrabold text-white shadow-lg";
+        feedback.textContent = "Muito bem! Acertaste! ⭐";
+        feedback.classList.add("text-emerald-300");
+      } else {
+        selectedButton.className = "min-h-14 rounded-2xl border-2 border-rose-400 bg-rose-600 px-3 py-3 text-xl font-extrabold text-white shadow-md";
+        const correctButton = optionButtons.find((button) => button.textContent === correct);
+        correctButton.className = "min-h-14 rounded-2xl border-2 border-emerald-400 bg-emerald-500/90 px-3 py-3 text-xl font-extrabold text-white shadow-md";
+        feedback.textContent = `Quase! A resposta certa é ${correct}.`;
+        feedback.classList.add("text-amber-200");
+      }
+
+      document.getElementById("score-display").textContent = `⭐ ${score}`;
+      nextButton.textContent = questionIndex === roundQuestions.length - 1 ? "Ver resultado 🏁" : "Próximo desafio →";
+      nextButton.classList.remove("hidden");
+      nextButton.focus();
+    }
+
+    function nextQuestion() {
+      questionIndex++;
+      if (questionIndex < roundQuestions.length) {
+        loadQuestion();
+      } else {
+        endGame();
+      }
+    }
+
+    function endGame() {
+      gameScreen.classList.add("hidden");
+      gameScreen.classList.remove("flex");
+      endScreen.classList.remove("hidden");
+      endScreen.classList.add("flex");
+      progressBar.style.width = "100%";
+      progressTrack.setAttribute("aria-valuenow", String(roundQuestions.length));
+      document.getElementById("final-score").textContent = `${score} pontos`;
+      document.getElementById("accuracy-text").textContent = `Acertaste em ${correctAnswers} de ${roundQuestions.length} desafios.`;
+      document.getElementById("final-emoji").textContent = correctAnswers >= 12 ? "🏆" : correctAnswers >= 8 ? "🌟" : "⚡";
+      document.getElementById("replay-button").focus();
+    }
+
+    document.getElementById("start-button").addEventListener("click", startGame);
+    document.getElementById("replay-button").addEventListener("click", startGame);
+    nextButton.addEventListener("click", nextQuestion);
+  </script>
+</body>
+</html>

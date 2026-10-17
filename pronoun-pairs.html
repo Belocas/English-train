@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f172a">
+  <title>Pares de Pronomes - English Train</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Fredoka', cursive, sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    button:focus-visible, a:focus-visible {
+      outline: 3px solid #7dd3fc;
+      outline-offset: 4px;
+    }
+    .bounce-emoji {
+      animation: bounce 1.5s infinite alternate;
+    }
+    @keyframes bounce {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-10px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-900 p-3 text-white sm:p-6">
+  <main class="mx-auto flex min-h-[calc(100vh-1.5rem)] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border-4 border-sky-500/30 bg-slate-800 p-4 text-center shadow-2xl sm:min-h-[600px] sm:p-7">
+    <section id="start-screen" class="my-auto flex flex-col items-center justify-center space-y-5 py-4">
+      <a href="index.html" class="self-start rounded-full bg-slate-700 px-4 py-2 text-sm font-bold text-slate-200 transition hover:bg-slate-600">← Menu inicial</a>
+      <div class="bounce-emoji text-7xl" aria-hidden="true">🧩🖼️</div>
+      <div>
+        <p class="text-sm font-bold uppercase tracking-[0.25em] text-sky-300">English Train · 2.º ano</p>
+        <h1 class="mt-2 text-4xl font-black tracking-wide text-sky-300 drop-shadow-md sm:text-5xl">PARES DE PRONOMES</h1>
+        <p class="mt-3 text-lg text-indigo-200">Encontra os pares: imagem e pronome!</p>
+      </div>
+      <div class="w-full max-w-lg rounded-2xl border border-sky-500/20 bg-slate-900/60 p-4 text-left text-sm text-slate-300">
+        <p class="mb-2 text-center text-base font-bold text-sky-300">🎯 COMO JOGAR</p>
+        <ul class="space-y-1.5 pl-5">
+          <li class="list-disc">Vê várias imagens e opções ao mesmo tempo.</li>
+          <li class="list-disc">Escolhe uma imagem e depois o pronome que combina.</li>
+          <li class="list-disc">Encontra 4 pares em cada ronda. Os 7 pronomes estão sempre disponíveis!</li>
+          <li class="list-disc">As imagens não se repetem em partidas seguidas.</li>
+        </ul>
+      </div>
+      <button id="start-button" type="button" class="rounded-full bg-gradient-to-r from-sky-400 to-indigo-400 px-9 py-4 text-xl font-extrabold text-slate-900 shadow-lg shadow-sky-500/20 transition hover:scale-105 hover:from-sky-300 hover:to-indigo-300 active:scale-95">
+        COMEÇAR A JOGAR 🧩
+      </button>
+    </section>
+
+    <section id="game-screen" class="hidden flex-1 flex-col" aria-labelledby="game-title">
+      <header class="mb-4 flex items-center justify-between gap-2 rounded-2xl border border-slate-700 bg-slate-900/80 px-3 py-3 sm:px-4">
+        <a href="index.html" class="shrink-0 rounded-full bg-slate-700 px-3 py-2 text-sm font-bold text-slate-200 transition hover:bg-slate-600">Menu</a>
+        <p id="round-count" class="text-sm font-bold text-sky-300 sm:text-base">Ronda 1 de 4</p>
+        <p id="score-display" class="shrink-0 text-base font-bold text-emerald-400 sm:text-lg" aria-label="Pontuação">⭐ 0</p>
+      </header>
+
+      <div class="mb-5 h-3 w-full overflow-hidden rounded-full border border-slate-700 bg-slate-900" role="progressbar" aria-label="Pares encontrados" aria-valuemin="0" aria-valuemax="16" aria-valuenow="0">
+        <div id="progress-bar" class="h-full w-0 rounded-full bg-gradient-to-r from-indigo-500 to-sky-400 transition-all duration-300"></div>
+      </div>
+      <h2 id="game-title" class="text-xl font-bold text-white sm:text-2xl">Escolhe uma imagem e encontra o seu par!</h2>
+      <p class="mb-4 mt-2 text-sm text-indigo-200">Primeiro toca numa imagem; depois escolhe um pronome.</p>
+
+      <div class="grid flex-1 gap-5 text-left md:grid-cols-[1.4fr_1fr]">
+        <section aria-labelledby="images-heading">
+          <h3 id="images-heading" class="mb-2 text-center text-sm font-bold uppercase tracking-wider text-slate-400">Imagens</h3>
+          <div id="images-grid" class="grid grid-cols-2 gap-2 sm:gap-3"></div>
+        </section>
+        <section aria-labelledby="pronouns-heading">
+          <h3 id="pronouns-heading" class="mb-2 text-center text-sm font-bold uppercase tracking-wider text-slate-400">Pronomes</h3>
+          <div id="pronouns-grid" class="grid grid-cols-2 gap-2 sm:gap-3"></div>
+        </section>
+      </div>
+
+      <p id="feedback" class="mt-4 min-h-8 text-lg font-bold" role="status" aria-live="polite">Seleciona uma imagem para começar.</p>
+      <button id="next-round-button" type="button" class="mx-auto mt-2 hidden rounded-full bg-sky-400 px-7 py-3 font-extrabold text-slate-900 transition hover:bg-sky-300">
+        Próxima ronda →
+      </button>
+    </section>
+
+    <section id="end-screen" class="my-auto hidden flex-col items-center justify-center space-y-5 py-4" aria-labelledby="end-title">
+      <a href="index.html" class="self-start rounded-full bg-slate-700 px-4 py-2 text-sm font-bold text-slate-200 transition hover:bg-slate-600">← Menu inicial</a>
+      <div id="final-emoji" class="bounce-emoji text-8xl" aria-hidden="true">🏆</div>
+      <div>
+        <h2 id="end-title" class="text-3xl font-black text-sky-300">PARES ENCONTRADOS!</h2>
+        <p class="mt-2 text-lg text-slate-300">Completaste todas as rondas!</p>
+      </div>
+      <div class="my-2 w-full max-w-sm rounded-3xl border border-sky-500/30 bg-slate-900/80 p-6">
+        <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Pontuação final</p>
+        <p id="final-score" class="my-1 text-5xl font-black text-emerald-400">0 pontos</p>
+        <p id="accuracy-text" class="mt-2 text-sm font-semibold text-slate-300">Encontraste 0 de 16 pares.</p>
+      </div>
+      <button id="replay-button" type="button" class="rounded-full bg-gradient-to-r from-sky-400 to-indigo-400 px-8 py-4 text-lg font-extrabold text-slate-900 shadow-lg shadow-sky-500/20 transition hover:scale-105 hover:from-sky-300 hover:to-indigo-300 active:scale-95">
+        JOGAR OUTRA VEZ 🔄
+      </button>
+    </section>
+  </main>
+
+  <script>
+    const pronouns = ["I", "you", "he", "she", "it", "we", "they"];
+    const examples = [
+      { pronoun: "I", image: "🙋", clue: "A pessoa fala de si." },
+      { pronoun: "I", image: "🧒☝️", clue: "«Eu!» diz quem está a falar." },
+      { pronoun: "I", image: "🙂🫵", clue: "Fala sobre ti próprio." },
+      { pronoun: "I", image: "🙋‍♀️🗣️", clue: "A menina fala sobre si própria." },
+      { pronoun: "I", image: "🧒👉", clue: "A criança diz «eu» e aponta para si." },
+      { pronoun: "I", image: "🧑‍🎨", clue: "O artista conta algo sobre si." },
+      { pronoun: "you", image: "👉🙂", clue: "Fala diretamente com um amigo." },
+      { pronoun: "you", image: "👂🗣️", clue: "A pessoa está a falar contigo." },
+      { pronoun: "you", image: "🧑‍🏫👉", clue: "O professor fala com a turma." },
+      { pronoun: "you", image: "👋🫵", clue: "A pessoa dirige-se diretamente a ti." },
+      { pronoun: "you", image: "👀👉", clue: "O colega olha para ti enquanto fala." },
+      { pronoun: "you", image: "🗣️👥", clue: "A treinadora fala com a equipa." },
+      { pronoun: "he", image: "👦", clue: "Estamos a falar de um rapaz." },
+      { pronoun: "he", image: "👨", clue: "Estamos a falar de um homem." },
+      { pronoun: "he", image: "🧑‍🚀", clue: "Este astronauta é um rapaz." },
+      { pronoun: "he", image: "👨‍🍳", clue: "Estamos a falar de um cozinheiro." },
+      { pronoun: "he", image: "🧔", clue: "Estamos a falar de um homem com barba." },
+      { pronoun: "he", image: "👦⚽", clue: "Estamos a falar de um rapaz com uma bola." },
+      { pronoun: "she", image: "👧", clue: "Estamos a falar de uma rapariga." },
+      { pronoun: "she", image: "👩", clue: "Estamos a falar de uma mulher." },
+      { pronoun: "she", image: "🧑‍🚒", clue: "Esta bombeira é uma mulher." },
+      { pronoun: "she", image: "👩‍⚕️", clue: "Estamos a falar de uma médica." },
+      { pronoun: "she", image: "👩‍🎤", clue: "Estamos a falar de uma cantora." },
+      { pronoun: "she", image: "👧📚", clue: "Estamos a falar de uma rapariga com livros." },
+      { pronoun: "it", image: "⚽", clue: "Estamos a falar de uma bola." },
+      { pronoun: "it", image: "🧸", clue: "Estamos a falar de um brinquedo." },
+      { pronoun: "it", image: "🐱", clue: "Estamos a falar de um animal." },
+      { pronoun: "it", image: "🚲", clue: "Estamos a falar de uma bicicleta." },
+      { pronoun: "it", image: "🍎", clue: "Estamos a falar de uma maçã." },
+      { pronoun: "it", image: "🐢", clue: "Estamos a falar de uma tartaruga." },
+      { pronoun: "we", image: "🧒🧒", clue: "Eu e o meu amigo estamos juntos." },
+      { pronoun: "we", image: "👨‍👩‍👧", clue: "Eu e a minha família estamos na fotografia." },
+      { pronoun: "we", image: "👫", clue: "Eu e a minha irmã estamos a brincar." },
+      { pronoun: "we", image: "👭", clue: "Eu e a minha amiga estamos juntas." },
+      { pronoun: "we", image: "🧑‍🤝‍🧑", clue: "Eu e os meus colegas fazemos parte do grupo." },
+      { pronoun: "we", image: "⚽🧒🧒", clue: "Eu e os meus amigos jogamos juntos." },
+      { pronoun: "they", image: "👧👦", clue: "Estamos a falar de outras crianças." },
+      { pronoun: "they", image: "🐶🐶", clue: "Estamos a falar de dois cães." },
+      { pronoun: "they", image: "👨‍👩‍👧‍👦", clue: "Estamos a falar de uma família." },
+      { pronoun: "they", image: "🐦🐦", clue: "Estamos a falar de vários pássaros." },
+      { pronoun: "they", image: "🚗🚗", clue: "Estamos a falar de dois carros." },
+      { pronoun: "they", image: "🧑‍🤝‍🧑🧑", clue: "Estamos a falar de um grupo de outras pessoas." }
+    ];
+
+    const imagesGrid = document.getElementById("images-grid");
+    const pronounsGrid = document.getElementById("pronouns-grid");
+    const feedback = document.getElementById("feedback");
+    const nextRoundButton = document.getElementById("next-round-button");
+    const progressBar = document.getElementById("progress-bar");
+    const progressTrack = progressBar.parentElement;
+    const pairsPerRound = 4;
+    const totalRounds = 4;
+    const recentExamplesKey = "englishTrainPronounPairsRecent-v2";
+    let round = 0;
+    let score = 0;
+    let matchedPairs = 0;
+    let roundCards = [];
+    let selectedCard = null;
+    let recentExampleKeys = [];
+    let recentHistoryKeys = [];
+    let usedExampleKeys = new Set();
+
+    function getExampleKey(example) {
+      return `${example.pronoun}|${example.clue}`;
+    }
+
+    function shuffle(items) {
+      const shuffled = [...items];
+      for (let index = shuffled.length - 1; index > 0; index--) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+      }
+      return shuffled;
+    }
+
+    function startGame() {
+      round = 0;
+      score = 0;
+      matchedPairs = 0;
+      usedExampleKeys = new Set();
+      try {
+        const storedExamples = JSON.parse(localStorage.getItem(recentExamplesKey) || "[]");
+        recentExampleKeys = Array.isArray(storedExamples) ? storedExamples.filter((key) => typeof key === "string") : [];
+      } catch {
+        recentExampleKeys = [];
+      }
+      recentHistoryKeys = [...recentExampleKeys];
+      document.getElementById("score-display").textContent = "⭐ 0";
+      document.getElementById("start-screen").classList.add("hidden");
+      document.getElementById("end-screen").classList.add("hidden");
+      const gameScreen = document.getElementById("game-screen");
+      gameScreen.classList.remove("hidden");
+      gameScreen.classList.add("flex");
+      loadRound();
+    }
+
+    function loadRound() {
+      selectedCard = null;
+      document.getElementById("round-count").textContent = `Ronda ${round + 1} de ${totalRounds}`;
+      feedback.className = "mt-4 min-h-8 text-lg font-bold text-indigo-200";
+      feedback.textContent = "Seleciona uma imagem para começar.";
+      nextRoundButton.classList.add("hidden");
+      imagesGrid.replaceChildren();
+      pronounsGrid.replaceChildren();
+
+      let availableExamples = examples.filter((item) => !usedExampleKeys.has(getExampleKey(item)) && !recentExampleKeys.includes(getExampleKey(item)));
+      let availablePronouns = [...new Set(availableExamples.map((item) => item.pronoun))];
+      if (availablePronouns.length < pairsPerRound) {
+        availableExamples = examples.filter((item) => !usedExampleKeys.has(getExampleKey(item)));
+        availablePronouns = [...new Set(availableExamples.map((item) => item.pronoun))];
+      }
+
+      const selectedPronouns = shuffle(availablePronouns).slice(0, pairsPerRound);
+      roundCards = selectedPronouns.map((pronoun, index) => {
+        const example = shuffle(availableExamples.filter((item) => item.pronoun === pronoun))[0];
+        usedExampleKeys.add(getExampleKey(example));
+        return { ...example, id: `${round}-${index}`, matched: false };
+      });
+
+      recentHistoryKeys = [...recentHistoryKeys, ...roundCards.map(getExampleKey)].slice(-16);
+      try {
+        localStorage.setItem(recentExamplesKey, JSON.stringify(recentHistoryKeys));
+      } catch {
+        // Continue normally when browser storage is unavailable.
+      }
+
+      roundCards.forEach((card) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "image-card min-h-32 rounded-2xl border-2 border-slate-600 bg-slate-900/70 p-3 text-center transition hover:border-sky-400 hover:bg-slate-700 sm:min-h-36";
+      button.dataset.cardId = card.id;
+        button.setAttribute("aria-pressed", "false");
+        button.setAttribute("aria-label", `Imagem ${card.image}. ${card.clue} Escolher esta imagem.`);
+        button.innerHTML = `<span class="block text-4xl sm:text-5xl" aria-hidden="true">${card.image}</span><span class="mt-2 block text-xs font-semibold leading-snug text-indigo-100 sm:text-sm">${card.clue}</span><span class="match-label mt-1 hidden text-sm font-extrabold uppercase text-emerald-300"></span>`;
+        button.addEventListener("click", () => selectCard(card, button));
+        imagesGrid.appendChild(button);
+      });
+
+      pronouns.forEach((pronoun) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.pronoun = pronoun;
+        button.setAttribute("aria-label", `Pronome ${pronoun}`);
+        button.className = "pronoun-option min-h-14 rounded-2xl border-2 border-indigo-400/50 bg-indigo-600/40 px-2 py-3 text-xl font-extrabold text-white shadow-md transition hover:border-sky-300 hover:bg-indigo-500/60";
+        button.textContent = pronoun;
+        button.addEventListener("click", () => matchPronoun(pronoun, button));
+        pronounsGrid.appendChild(button);
+      });
+    }
+
+    function selectCard(card, button) {
+      if (card.matched) return;
+      imagesGrid.querySelectorAll(".image-card").forEach((imageButton) => {
+        imageButton.setAttribute("aria-pressed", "false");
+        imageButton.classList.remove("border-sky-300", "bg-sky-900/80", "ring-2", "ring-sky-400");
+      });
+      selectedCard = card;
+      button.setAttribute("aria-pressed", "true");
+      button.classList.add("border-sky-300", "bg-sky-900/80", "ring-2", "ring-sky-400");
+      feedback.className = "mt-4 min-h-8 text-lg font-bold text-sky-200";
+      feedback.textContent = `Boa! Agora escolhe o pronome para: ${card.clue}`;
+    }
+
+    function matchPronoun(pronoun, button) {
+      if (!selectedCard) {
+        feedback.className = "mt-4 min-h-8 text-lg font-bold text-amber-200";
+        feedback.textContent = "Primeiro escolhe uma imagem!";
+        return;
+      }
+
+      if (selectedCard.pronoun === pronoun) {
+        selectedCard.matched = true;
+        matchedPairs++;
+        score += 100;
+        document.getElementById("score-display").textContent = `⭐ ${score}`;
+        const imageButton = imagesGrid.querySelector(`[data-card-id="${selectedCard.id}"]`);
+        imageButton.disabled = true;
+        imageButton.setAttribute("aria-pressed", "false");
+        imageButton.classList.remove("border-sky-300", "bg-sky-900/80", "ring-2", "ring-sky-400", "border-slate-600", "bg-slate-900/70");
+        imageButton.classList.add("border-emerald-400", "bg-emerald-900/40");
+        const matchLabel = imageButton.querySelector(".match-label");
+        matchLabel.textContent = `✓ ${pronoun}`;
+        matchLabel.classList.remove("hidden");
+        button.classList.remove("border-indigo-400/50", "bg-indigo-600/40", "hover:border-sky-300", "hover:bg-indigo-500/60");
+        button.classList.add("border-emerald-400", "bg-emerald-600/40", "text-emerald-100");
+        button.disabled = true;
+        selectedCard = null;
+        feedback.className = "mt-4 min-h-8 text-lg font-bold text-emerald-300";
+        feedback.textContent = "Par encontrado! Muito bem! ⭐";
+        updateProgress();
+        if (roundCards.every((card) => card.matched)) {
+          feedback.textContent = round === totalRounds - 1 ? "Todos os pares encontrados!" : "Ronda completa! Prepara-te para mais pares.";
+          nextRoundButton.textContent = round === totalRounds - 1 ? "Ver resultado 🏆" : "Próxima ronda →";
+          nextRoundButton.classList.remove("hidden");
+          nextRoundButton.focus();
+        }
+      } else {
+        feedback.className = "mt-4 min-h-8 text-lg font-bold text-amber-200";
+        feedback.textContent = `Ainda não. Experimenta outro pronome para ${selectedCard.image}.`;
+        button.classList.add("animate-pulse");
+        window.setTimeout(() => button.classList.remove("animate-pulse"), 500);
+      }
+    }
+
+    function updateProgress() {
+      progressBar.style.width = `${(matchedPairs / (pairsPerRound * totalRounds)) * 100}%`;
+      progressTrack.setAttribute("aria-valuenow", String(matchedPairs));
+    }
+
+    function nextRound() {
+      if (round === totalRounds - 1) {
+        endGame();
+        return;
+      }
+      round++;
+      loadRound();
+      imagesGrid.querySelector(".image-card")?.focus();
+    }
+
+    function endGame() {
+      document.getElementById("game-screen").classList.add("hidden");
+      document.getElementById("game-screen").classList.remove("flex");
+      const endScreen = document.getElementById("end-screen");
+      endScreen.classList.remove("hidden");
+      endScreen.classList.add("flex");
+      document.getElementById("final-score").textContent = `${score} pontos`;
+      document.getElementById("accuracy-text").textContent = `Encontraste ${matchedPairs} de ${pairsPerRound * totalRounds} pares.`;
+      document.getElementById("final-emoji").textContent = matchedPairs === pairsPerRound * totalRounds ? "🏆" : "🌟";
+      document.getElementById("replay-button").focus();
+    }
+
+    document.getElementById("start-button").addEventListener("click", startGame);
+    document.getElementById("replay-button").addEventListener("click", startGame);
+    nextRoundButton.addEventListener("click", nextRound);
+  </script>
+</body>
+</html>

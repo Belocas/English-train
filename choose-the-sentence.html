@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f172a">
+  <title>Detetive das Frases - English Train</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Fredoka', cursive, sans-serif; user-select: none; -webkit-user-select: none; }
+    button:focus-visible, a:focus-visible { outline: 3px solid #fde68a; outline-offset: 4px; }
+    .bounce-emoji { animation: bounce 1.5s infinite alternate; }
+    @keyframes bounce { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-900 p-3 text-white sm:p-6">
+  <main class="mx-auto flex min-h-[calc(100vh-1.5rem)] w-full max-w-3xl flex-col overflow-hidden rounded-3xl border-4 border-amber-500/30 bg-slate-800 p-4 text-center shadow-2xl sm:min-h-[600px] sm:p-7">
+    <section id="start-screen" class="my-auto flex flex-col items-center justify-center space-y-5 py-4">
+      <a href="index.html" class="self-start rounded-full bg-slate-700 px-4 py-2 text-sm font-bold text-slate-200 transition hover:bg-slate-600">← Menu inicial</a>
+      <div class="bounce-emoji text-7xl" aria-hidden="true">🧐🔍</div>
+      <div>
+        <p class="text-sm font-bold uppercase tracking-[0.25em] text-amber-300">English Train · 2.º ano</p>
+        <h1 class="mt-2 text-4xl font-black tracking-wide text-amber-300 sm:text-5xl">DETETIVE DAS FRASES</h1>
+        <p class="mt-3 text-lg text-indigo-200">Qual frase combina com a imagem?</p>
+      </div>
+      <div class="w-full max-w-lg rounded-2xl border border-amber-500/20 bg-slate-900/60 p-4 text-left text-sm text-slate-300">
+        <p class="mb-2 text-center text-base font-bold text-amber-300">🔎 COMO JOGAR</p>
+        <ul class="space-y-1.5 pl-5">
+          <li class="list-disc">Observa a imagem e lê as duas frases.</li>
+          <li class="list-disc">Escolhe a frase correta: atenção ao <strong class="text-white">am</strong>, <strong class="text-white">is</strong> e <strong class="text-white">are</strong>!</li>
+          <li class="list-disc">Resolve 10 casos diferentes em cada partida e ganha estrelas.</li>
+        </ul>
+      </div>
+      <button id="start-button" type="button" class="rounded-full bg-gradient-to-r from-amber-400 to-orange-400 px-9 py-4 text-xl font-extrabold text-slate-900 shadow-lg transition hover:scale-105 hover:from-amber-300 hover:to-orange-300 active:scale-95">COMEÇAR A INVESTIGAR 🔍</button>
+    </section>
+
+    <section id="game-screen" class="hidden flex-1 flex-col justify-between" aria-labelledby="question-title">
+      <div>
+        <header class="mb-4 flex items-center justify-between gap-2 rounded-2xl border border-slate-700 bg-slate-900/80 px-3 py-3 sm:px-4">
+          <a href="index.html" class="shrink-0 rounded-full bg-slate-700 px-3 py-2 text-sm font-bold text-slate-200 transition hover:bg-slate-600">Menu</a>
+          <p id="question-count" class="text-sm font-bold text-amber-300 sm:text-base" aria-live="polite">Caso 1 de 10</p>
+          <p id="score-display" class="shrink-0 text-base font-bold text-emerald-400 sm:text-lg" aria-label="Pontuação">⭐ 0</p>
+        </header>
+        <div class="mb-5 h-3 w-full overflow-hidden rounded-full border border-slate-700 bg-slate-900" role="progressbar" aria-label="Progresso do jogo" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0">
+          <div id="progress-bar" class="h-full w-0 rounded-full bg-gradient-to-r from-orange-500 to-amber-300 transition-all duration-300"></div>
+        </div>
+        <div class="mb-5 flex min-h-48 flex-col items-center justify-center rounded-3xl border-2 border-amber-500/20 bg-slate-900/60 px-4 py-5">
+          <div id="character-image" class="text-7xl" aria-hidden="true"></div>
+          <p id="character-clue" class="mt-3 text-base font-semibold text-amber-100"></p>
+        </div>
+        <h2 id="question-title" class="mb-4 text-xl font-bold text-white sm:text-2xl">Escolhe a frase correta!</h2>
+        <div id="sentence-options" class="mx-auto grid w-full max-w-2xl gap-3" role="group" aria-label="Frases para escolher"></div>
+        <p id="feedback" class="mt-4 min-h-8 text-lg font-bold text-indigo-200" role="status" aria-live="polite">Lê as duas frases com atenção.</p>
+      </div>
+      <button id="next-button" type="button" class="mx-auto mt-5 hidden rounded-full bg-amber-400 px-7 py-3 font-extrabold text-slate-900 transition hover:bg-amber-300">Próximo caso →</button>
+    </section>
+
+    <section id="end-screen" class="my-auto hidden flex-col items-center justify-center space-y-5 py-4" aria-labelledby="end-title">
+      <a href="index.html" class="self-start rounded-full bg-slate-700 px-4 py-2 text-sm font-bold text-slate-200 transition hover:bg-slate-600">← Menu inicial</a>
+      <div id="final-emoji" class="bounce-emoji text-8xl" aria-hidden="true">🏆</div>
+      <div><h2 id="end-title" class="text-3xl font-black text-amber-300">CASO RESOLVIDO!</h2><p class="mt-2 text-lg text-slate-300">Apanhaste todas as pistas!</p></div>
+      <div class="my-2 w-full max-w-sm rounded-3xl border border-amber-500/30 bg-slate-900/80 p-6">
+        <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Pontuação final</p>
+        <p id="final-score" class="my-1 text-5xl font-black text-emerald-400">0 pontos</p>
+        <p id="accuracy-text" class="mt-2 text-sm font-semibold text-slate-300">Resolveste 0 de 10 casos.</p>
+      </div>
+      <button id="replay-button" type="button" class="rounded-full bg-gradient-to-r from-amber-400 to-orange-400 px-8 py-4 text-lg font-extrabold text-slate-900 shadow-lg transition hover:scale-105 hover:from-amber-300 hover:to-orange-300">JOGAR OUTRA VEZ 🔄</button>
+    </section>
+  </main>
+
+  <script>
+    const cases = [
+      { image: "🧒😊", clue: "Uma criança feliz", correct: "I am happy.", wrong: "I is happy." },
+      { image: "🧒🏠", clue: "Uma criança em casa", correct: "I am at home.", wrong: "I are at home." },
+      { image: "🧒📚", clue: "Uma criança com livros", correct: "I am a student.", wrong: "I is a student." },
+      { image: "🧒🙋", clue: "Uma criança pronta", correct: "I am ready.", wrong: "I are ready." },
+      { image: "🧒⚽", clue: "Uma criança a jogar", correct: "I am a good player.", wrong: "I is a good player." },
+      { image: "🫵🙂", clue: "Um amigo simpático", correct: "You are my friend.", wrong: "You is my friend." },
+      { image: "🫵😊", clue: "Uma pessoa feliz", correct: "You are happy.", wrong: "You am happy." },
+      { image: "🫵🏫", clue: "Uma pessoa na escola", correct: "You are at school.", wrong: "You is at school." },
+      { image: "🫵⭐", clue: "Um bom aluno", correct: "You are a good student.", wrong: "You am a good student." },
+      { image: "🫵💪", clue: "Uma pessoa forte", correct: "You are strong.", wrong: "You is strong." },
+      { image: "👦📏", clue: "Um rapaz alto", correct: "He is tall.", wrong: "He are tall." },
+      { image: "👦😊", clue: "Um rapaz feliz", correct: "He is happy.", wrong: "He am happy." },
+      { image: "👦🏫", clue: "Um rapaz na escola", correct: "He is at school.", wrong: "He are at school." },
+      { image: "👦👬", clue: "Um rapaz que é irmão", correct: "He is my brother.", wrong: "He am my brother." },
+      { image: "👦⚽", clue: "Um rapaz com uma bola", correct: "He is a good player.", wrong: "He are a good player." },
+      { image: "👧😊", clue: "Uma rapariga feliz", correct: "She is happy.", wrong: "She are happy." },
+      { image: "👧📚", clue: "Uma rapariga que lê", correct: "She is a student.", wrong: "She am a student." },
+      { image: "👧🏠", clue: "Uma rapariga em casa", correct: "She is at home.", wrong: "She are at home." },
+      { image: "👧🎨", clue: "Uma rapariga com tintas", correct: "She is an artist.", wrong: "She am an artist." },
+      { image: "👧👭", clue: "Uma rapariga que é irmã", correct: "She is my sister.", wrong: "She are my sister." },
+      { image: "🍎🔴", clue: "Uma maçã vermelha", correct: "It is red.", wrong: "It are red." },
+      { image: "⚽🟢", clue: "Uma bola verde", correct: "It is green.", wrong: "It am green." },
+      { image: "🐱🏠", clue: "Um gato em casa", correct: "It is at home.", wrong: "It are at home." },
+      { image: "🐶😊", clue: "Um cão feliz", correct: "It is happy.", wrong: "It am happy." },
+      { image: "📘🔵", clue: "Um livro azul", correct: "It is blue.", wrong: "It are blue." },
+      { image: "🧒🤝🧒", clue: "Dois amigos", correct: "We are friends.", wrong: "We is friends." },
+      { image: "🧒🏫🧒", clue: "Duas crianças na escola", correct: "We are at school.", wrong: "We am at school." },
+      { image: "🧒😊🧒", clue: "Duas crianças felizes", correct: "We are happy.", wrong: "We is happy." },
+      { image: "🧒⚽🧒", clue: "Uma equipa pronta para jogar", correct: "We are a team.", wrong: "We is a team." },
+      { image: "🧒🙋🧒", clue: "Duas crianças prontas", correct: "We are ready.", wrong: "We am ready." },
+      { image: "🐱🐱", clue: "Dois gatos", correct: "They are cats.", wrong: "They is cats." },
+      { image: "🐶🐶", clue: "Dois cães felizes", correct: "They are happy.", wrong: "They am happy." },
+      { image: "👦👧🏫", clue: "Crianças na escola", correct: "They are at school.", wrong: "They is at school." },
+      { image: "🍎🍎🔴", clue: "Maçãs vermelhas", correct: "They are red.", wrong: "They am red." },
+      { image: "🐦🐦", clue: "Pássaros pequenos", correct: "They are small.", wrong: "They is small." },
+      { image: "🧸🧸", clue: "Dois brinquedos novos", correct: "They are new toys.", wrong: "They is new toys." },
+      { image: "👧👭👧", clue: "Três amigas", correct: "They are friends.", wrong: "They am friends." },
+      { image: "📚📚", clue: "Livros azuis", correct: "They are blue.", wrong: "They is blue." },
+      { image: "🧒🧒🏠", clue: "Duas crianças em casa", correct: "They are at home.", wrong: "They am at home." },
+      { image: "🐸🐸💚", clue: "Rãs verdes", correct: "They are green.", wrong: "They is green." }
+    ];
+    const questionsPerGame = 10;
+    const startScreen = document.getElementById("start-screen");
+    const gameScreen = document.getElementById("game-screen");
+    const endScreen = document.getElementById("end-screen");
+    const sentenceOptions = document.getElementById("sentence-options");
+    const feedback = document.getElementById("feedback");
+    const nextButton = document.getElementById("next-button");
+    const progressBar = document.getElementById("progress-bar");
+    const progressTrack = progressBar.parentElement;
+    let roundCases = [];
+    let questionIndex = 0;
+    let score = 0;
+    let solved = 0;
+    let canAnswer = true;
+
+    function shuffle(items) {
+      const shuffled = [...items];
+      for (let index = shuffled.length - 1; index > 0; index--) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+      }
+      return shuffled;
+    }
+
+    function startGame() {
+      roundCases = shuffle(cases).slice(0, questionsPerGame);
+      questionIndex = 0;
+      score = 0;
+      solved = 0;
+      document.getElementById("score-display").textContent = "⭐ 0";
+      startScreen.classList.add("hidden");
+      endScreen.classList.add("hidden");
+      gameScreen.classList.remove("hidden");
+      gameScreen.classList.add("flex");
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      canAnswer = true;
+      const currentCase = roundCases[questionIndex];
+      document.getElementById("question-count").textContent = `Caso ${questionIndex + 1} de ${roundCases.length}`;
+      document.getElementById("character-image").textContent = currentCase.image;
+      document.getElementById("character-clue").textContent = currentCase.clue;
+      feedback.textContent = "Lê as duas frases com atenção.";
+      feedback.className = "mt-4 min-h-8 text-lg font-bold text-indigo-200";
+      nextButton.classList.add("hidden");
+      sentenceOptions.replaceChildren();
+      shuffle([
+        { text: currentCase.correct, correct: true },
+        { text: currentCase.wrong, correct: false }
+      ]).forEach((option, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "min-h-20 rounded-2xl border-2 border-slate-600 bg-slate-900/70 px-4 py-4 text-left text-lg font-bold text-white shadow-md transition hover:border-amber-300 hover:bg-slate-700 sm:text-xl";
+        button.setAttribute("lang", "en");
+        button.setAttribute("aria-label", `Opção ${index + 1}: ${option.text}`);
+        button.textContent = option.text;
+        button.addEventListener("click", () => chooseSentence(option.correct, button));
+        sentenceOptions.appendChild(button);
+      });
+      progressBar.style.width = `${(questionIndex / roundCases.length) * 100}%`;
+      progressTrack.setAttribute("aria-valuenow", String(questionIndex));
+      sentenceOptions.firstElementChild.focus();
+    }
+
+    function chooseSentence(isCorrect, selectedButton) {
+      if (!canAnswer) return;
+      if (!isCorrect) {
+        feedback.textContent = "Boa tentativa! Compara o pronome com o verbo e experimenta outra vez.";
+        feedback.className = "mt-4 min-h-8 text-lg font-bold text-amber-200";
+        return;
+      }
+      canAnswer = false;
+      solved++;
+      score += 100;
+      document.getElementById("score-display").textContent = `⭐ ${score}`;
+      sentenceOptions.querySelectorAll("button").forEach((button) => { button.disabled = true; });
+      selectedButton.classList.remove("border-slate-600", "bg-slate-900/70");
+      selectedButton.classList.add("border-emerald-400", "bg-emerald-600/30");
+      feedback.textContent = "Certo! Pronome e verbo combinam! ⭐";
+      feedback.className = "mt-4 min-h-8 text-lg font-bold text-emerald-300";
+      progressBar.style.width = `${((questionIndex + 1) / roundCases.length) * 100}%`;
+      progressTrack.setAttribute("aria-valuenow", String(questionIndex + 1));
+      nextButton.textContent = questionIndex === roundCases.length - 1 ? "Ver resultado 🏆" : "Próximo caso →";
+      nextButton.classList.remove("hidden");
+      nextButton.focus();
+    }
+
+    function nextQuestion() {
+      questionIndex++;
+      if (questionIndex < roundCases.length) return loadQuestion();
+      gameScreen.classList.add("hidden");
+      gameScreen.classList.remove("flex");
+      endScreen.classList.remove("hidden");
+      endScreen.classList.add("flex");
+      document.getElementById("final-score").textContent = `${score} pontos`;
+      document.getElementById("accuracy-text").textContent = `Resolveste corretamente ${solved} de ${roundCases.length} casos.`;
+      document.getElementById("final-emoji").textContent = solved === roundCases.length ? "🏆" : "🔎";
+      document.getElementById("replay-button").focus();
+    }
+
+    document.getElementById("start-button").addEventListener("click", startGame);
+    document.getElementById("replay-button").addEventListener("click", startGame);
+    nextButton.addEventListener("click", nextQuestion);
+  </script>
+</body>
+</html>

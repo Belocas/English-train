@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f172a">
+  <title>Pares das Cores - English Train</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Fredoka', cursive, sans-serif; user-select: none; -webkit-user-select: none; }
+    button:focus-visible, a:focus-visible { outline: 3px solid #86efac; outline-offset: 4px; }
+    .bounce-emoji { animation: bounce 1.5s infinite alternate; }
+    @keyframes bounce { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-900 p-3 text-white sm:p-6">
+  <main class="mx-auto flex min-h-[calc(100vh-1.5rem)] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border-4 border-emerald-500/30 bg-slate-800 p-4 text-center shadow-2xl sm:min-h-[600px] sm:p-7">
+    <section id="start-screen" class="my-auto flex flex-col items-center justify-center space-y-5 py-4">
+      <a href="index.html" class="self-start rounded-full bg-slate-700 px-4 py-2 text-sm font-bold text-slate-200 transition hover:bg-slate-600">← Menu inicial</a>
+      <div class="bounce-emoji text-7xl" aria-hidden="true">🎨🌈</div>
+      <div>
+        <p class="text-sm font-bold uppercase tracking-[0.25em] text-emerald-300">English Train · 2.º ano</p>
+        <h1 class="mt-2 text-4xl font-black tracking-wide text-emerald-300 drop-shadow-md sm:text-5xl">PARES DAS CORES</h1>
+        <p class="mt-3 text-lg text-indigo-200">Liga cada cor ao seu nome em inglês!</p>
+      </div>
+      <div class="w-full max-w-lg rounded-2xl border border-emerald-500/20 bg-slate-900/60 p-4 text-left text-sm text-slate-300">
+        <p class="mb-2 text-center text-base font-bold text-emerald-300">🎯 COMO JOGAR</p>
+        <ul class="space-y-1.5 pl-5">
+          <li class="list-disc">Toca numa cor e depois escolhe o nome em inglês.</li>
+          <li class="list-disc">Encontra 3 pares em cada ronda; são 3 rondas.</li>
+          <li class="list-disc">Treina 9 cores diferentes em cada partida.</li>
+        </ul>
+      </div>
+      <button id="start-button" type="button" class="rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 px-9 py-4 text-xl font-extrabold text-slate-900 shadow-lg shadow-emerald-500/20 transition hover:scale-105 hover:from-emerald-300 hover:to-teal-300 active:scale-95">
+        COMEÇAR A JOGAR 🎨
+      </button>
+    </section>
+
+    <section id="game-screen" class="hidden flex-1 flex-col" aria-labelledby="game-title">
+      <header class="mb-4 flex items-center justify-between gap-2 rounded-2xl border border-slate-700 bg-slate-900/80 px-3 py-3 sm:px-4">
+        <a href="index.html" class="shrink-0 rounded-full bg-slate-700 px-3 py-2 text-sm font-bold text-slate-200 transition hover:bg-slate-600">Menu</a>
+        <p id="round-count" class="text-sm font-bold text-emerald-300 sm:text-base">Ronda 1 de 3</p>
+        <p id="score-display" class="shrink-0 text-base font-bold text-emerald-400 sm:text-lg" aria-label="Pontuação">⭐ 0</p>
+      </header>
+
+      <div class="mb-5 h-3 w-full overflow-hidden rounded-full border border-slate-700 bg-slate-900" role="progressbar" aria-label="Pares encontrados" aria-valuemin="0" aria-valuemax="9" aria-valuenow="0">
+        <div id="progress-bar" class="h-full w-0 rounded-full bg-gradient-to-r from-teal-400 to-emerald-300 transition-all duration-300"></div>
+      </div>
+      <h2 id="game-title" class="text-xl font-bold text-white sm:text-2xl">Escolhe uma cor e encontra o seu nome!</h2>
+      <p class="mb-4 mt-2 text-sm text-indigo-200">Primeiro toca numa cor; depois escolhe o nome em inglês.</p>
+
+      <div class="grid flex-1 gap-5 text-left md:grid-cols-2">
+        <section aria-labelledby="colors-heading">
+          <h3 id="colors-heading" class="mb-2 text-center text-sm font-bold uppercase tracking-wider text-slate-400">Cores</h3>
+          <div id="colors-grid" class="grid grid-cols-3 gap-2 sm:gap-3"></div>
+        </section>
+        <section aria-labelledby="names-heading">
+          <h3 id="names-heading" class="mb-2 text-center text-sm font-bold uppercase tracking-wider text-slate-400">Nomes em inglês</h3>
+          <div id="names-grid" class="grid grid-cols-2 gap-2 sm:gap-3"></div>
+        </section>
+      </div>
+
+      <p id="feedback" class="mt-4 min-h-8 text-lg font-bold text-indigo-200" role="status" aria-live="polite">Seleciona uma cor para começar.</p>
+      <button id="next-round-button" type="button" class="mx-auto mt-2 hidden rounded-full bg-emerald-400 px-7 py-3 font-extrabold text-slate-900 transition hover:bg-emerald-300">
+        Próxima ronda →
+      </button>
+    </section>
+
+    <section id="end-screen" class="my-auto hidden flex-col items-center justify-center space-y-5 py-4" aria-labelledby="end-title">
+      <a href="index.html" class="self-start rounded-full bg-slate-700 px-4 py-2 text-sm font-bold text-slate-200 transition hover:bg-slate-600">← Menu inicial</a>
+      <div id="final-emoji" class="bounce-emoji text-8xl" aria-hidden="true">🏆</div>
+      <div>
+        <h2 id="end-title" class="text-3xl font-black text-emerald-300">CORES COMBINADAS!</h2>
+        <p class="mt-2 text-lg text-slate-300">Completaste todas as rondas!</p>
+      </div>
+      <div class="my-2 w-full max-w-sm rounded-3xl border border-emerald-500/30 bg-slate-900/80 p-6">
+        <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Pontuação final</p>
+        <p id="final-score" class="my-1 text-5xl font-black text-emerald-400">0 pontos</p>
+        <p id="accuracy-text" class="mt-2 text-sm font-semibold text-slate-300">Encontraste 0 de 9 pares.</p>
+      </div>
+      <button id="replay-button" type="button" class="rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 px-8 py-4 text-lg font-extrabold text-slate-900 shadow-lg shadow-emerald-500/20 transition hover:scale-105 hover:from-emerald-300 hover:to-teal-300 active:scale-95">
+        JOGAR OUTRA VEZ 🔄
+      </button>
+    </section>
+  </main>
+
+  <script>
+    const colors = [
+      { name: "red", hex: "#ef4444" },
+      { name: "blue", hex: "#3b82f6" },
+      { name: "yellow", hex: "#facc15" },
+      { name: "green", hex: "#22c55e" },
+      { name: "brown", hex: "#a16207" },
+      { name: "orange", hex: "#f97316" },
+      { name: "pink", hex: "#ec4899" },
+      { name: "purple", hex: "#a855f7" },
+      { name: "black", hex: "#111827" },
+      { name: "white", hex: "#f8fafc" },
+      { name: "grey", hex: "#94a3b8" }
+    ];
+    const colorsGrid = document.getElementById("colors-grid");
+    const namesGrid = document.getElementById("names-grid");
+    const feedback = document.getElementById("feedback");
+    const nextRoundButton = document.getElementById("next-round-button");
+    const progressBar = document.getElementById("progress-bar");
+    const progressTrack = progressBar.parentElement;
+    const pairsPerRound = 3;
+    const totalRounds = 3;
+    const recentColorsKey = "englishTrainColorPairsRecent-v1";
+    let round = 0;
+    let score = 0;
+    let matchedPairs = 0;
+    let roundColors = [];
+    let selectedColor = null;
+    let recentColors = [];
+
+    function shuffle(items) {
+      const shuffled = [...items];
+      for (let index = shuffled.length - 1; index > 0; index--) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+      }
+      return shuffled;
+    }
+
+    function startGame() {
+      round = 0;
+      score = 0;
+      matchedPairs = 0;
+      selectedColor = null;
+      let recent = [];
+      try {
+        const storedColors = JSON.parse(localStorage.getItem(recentColorsKey) || "[]");
+        recent = Array.isArray(storedColors) ? storedColors.filter((name) => colors.some((color) => color.name === name)) : [];
+      } catch {
+        recent = [];
+      }
+      const freshColors = shuffle(colors.filter((color) => !recent.includes(color.name)));
+      let selectedColors = freshColors.slice(0, pairsPerRound * totalRounds);
+      if (selectedColors.length < pairsPerRound * totalRounds) {
+        selectedColors = [...selectedColors, ...shuffle(colors.filter((color) => !selectedColors.includes(color))).slice(0, pairsPerRound * totalRounds - selectedColors.length)];
+      }
+      roundColors = shuffle(selectedColors);
+      try {
+        localStorage.setItem(recentColorsKey, JSON.stringify(roundColors.map((color) => color.name).slice(-9)));
+      } catch {
+        // Continue normally when browser storage is unavailable.
+      }
+      document.getElementById("score-display").textContent = "⭐ 0";
+      document.getElementById("start-screen").classList.add("hidden");
+      document.getElementById("end-screen").classList.add("hidden");
+      const gameScreen = document.getElementById("game-screen");
+      gameScreen.classList.remove("hidden");
+      gameScreen.classList.add("flex");
+      loadRound();
+    }
+
+    function loadRound() {
+      selectedColor = null;
+      const roundStart = round * pairsPerRound;
+      const currentColors = roundColors.slice(roundStart, roundStart + pairsPerRound);
+      document.getElementById("round-count").textContent = `Ronda ${round + 1} de ${totalRounds}`;
+      feedback.className = "mt-4 min-h-8 text-lg font-bold text-indigo-200";
+      feedback.textContent = "Seleciona uma cor para começar.";
+      nextRoundButton.classList.add("hidden");
+      colorsGrid.replaceChildren();
+      namesGrid.replaceChildren();
+
+      currentColors.forEach((color, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "color-card flex min-h-24 flex-col items-center justify-center rounded-2xl border-2 border-slate-600 bg-slate-900/70 p-2 transition hover:border-emerald-300 hover:bg-slate-700 sm:min-h-28";
+        button.dataset.color = color.name;
+        button.setAttribute("aria-pressed", "false");
+        button.setAttribute("aria-label", `Cor ${index + 1}. Seleciona esta cor.`);
+        button.innerHTML = `<span class="block h-12 w-12 rounded-full border-2 border-white/40 shadow-lg sm:h-14 sm:w-14" style="background-color: ${color.hex}" aria-hidden="true"></span><span class="match-label mt-2 hidden text-xs font-extrabold uppercase text-emerald-300"></span>`;
+        button.addEventListener("click", () => selectColor(color, button));
+        colorsGrid.appendChild(button);
+      });
+
+      shuffle(currentColors).forEach((color) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.color = color.name;
+        button.setAttribute("aria-label", `Nome da cor: ${color.name}`);
+        button.className = "name-option min-h-16 rounded-2xl border-2 border-indigo-400/50 bg-indigo-600/40 px-2 py-3 text-base font-extrabold capitalize text-white shadow-md transition hover:border-emerald-300 hover:bg-indigo-500/60 sm:text-lg";
+        button.textContent = color.name;
+        button.addEventListener("click", () => matchColor(color.name, button));
+        namesGrid.appendChild(button);
+      });
+    }
+
+    function selectColor(color, button) {
+      if (button.disabled) return;
+      colorsGrid.querySelectorAll(".color-card").forEach((card) => {
+        card.setAttribute("aria-pressed", "false");
+        card.classList.remove("border-emerald-300", "bg-emerald-900/50", "ring-2", "ring-emerald-400");
+      });
+      selectedColor = color;
+      button.setAttribute("aria-pressed", "true");
+      button.classList.add("border-emerald-300", "bg-emerald-900/50", "ring-2", "ring-emerald-400");
+      feedback.className = "mt-4 min-h-8 text-lg font-bold text-emerald-200";
+      feedback.textContent = "Boa! Agora escolhe o nome em inglês.";
+    }
+
+    function matchColor(name, button) {
+      if (!selectedColor) {
+        feedback.className = "mt-4 min-h-8 text-lg font-bold text-amber-200";
+        feedback.textContent = "Primeiro escolhe uma cor!";
+        return;
+      }
+      if (selectedColor.name !== name) {
+        feedback.className = "mt-4 min-h-8 text-lg font-bold text-amber-200";
+        feedback.textContent = "Ainda não. Experimenta outro nome!";
+        return;
+      }
+
+      const matchedName = selectedColor.name;
+      const colorButton = colorsGrid.querySelector(`[data-color="${matchedName}"]`);
+      colorButton.disabled = true;
+      colorButton.setAttribute("aria-pressed", "false");
+      colorButton.classList.remove("border-emerald-300", "bg-emerald-900/50", "ring-2", "ring-emerald-400", "border-slate-600", "bg-slate-900/70");
+      colorButton.classList.add("border-emerald-400", "bg-emerald-900/40");
+      const matchLabel = colorButton.querySelector(".match-label");
+      matchLabel.textContent = `✓ ${matchedName}`;
+      matchLabel.classList.remove("hidden");
+      button.disabled = true;
+      button.classList.remove("border-indigo-400/50", "bg-indigo-600/40", "hover:border-emerald-300", "hover:bg-indigo-500/60");
+      button.classList.add("border-emerald-400", "bg-emerald-600/40", "text-emerald-100");
+      selectedColor = null;
+      matchedPairs++;
+      score += 100;
+      document.getElementById("score-display").textContent = `⭐ ${score}`;
+      feedback.className = "mt-4 min-h-8 text-lg font-bold text-emerald-300";
+      feedback.textContent = "Par encontrado! Muito bem! ⭐";
+      updateProgress();
+
+      const roundComplete = [...colorsGrid.querySelectorAll(".color-card")].every((card) => card.disabled);
+      if (roundComplete) {
+        feedback.textContent = round === totalRounds - 1 ? "Todos os pares encontrados!" : "Ronda completa! Prepara-te para mais cores.";
+        nextRoundButton.textContent = round === totalRounds - 1 ? "Ver resultado 🏆" : "Próxima ronda →";
+        nextRoundButton.classList.remove("hidden");
+        nextRoundButton.focus();
+      }
+    }
+
+    function updateProgress() {
+      progressBar.style.width = `${(matchedPairs / (pairsPerRound * totalRounds)) * 100}%`;
+      progressTrack.setAttribute("aria-valuenow", String(matchedPairs));
+    }
+
+    function nextRound() {
+      if (round === totalRounds - 1) {
+        endGame();
+        return;
+      }
+      round++;
+      loadRound();
+      colorsGrid.querySelector(".color-card")?.focus();
+    }
+
+    function endGame() {
+      document.getElementById("game-screen").classList.add("hidden");
+      document.getElementById("game-screen").classList.remove("flex");
+      const endScreen = document.getElementById("end-screen");
+      endScreen.classList.remove("hidden");
+      endScreen.classList.add("flex");
+      document.getElementById("final-score").textContent = `${score} pontos`;
+      document.getElementById("accuracy-text").textContent = `Encontraste ${matchedPairs} de ${pairsPerRound * totalRounds} pares.`;
+      document.getElementById("final-emoji").textContent = matchedPairs === pairsPerRound * totalRounds ? "🏆" : "🌟";
+      document.getElementById("replay-button").focus();
+    }
+
+    document.getElementById("start-button").addEventListener("click", startGame);
+    document.getElementById("replay-button").addEventListener("click", startGame);
+    nextRoundButton.addEventListener("click", nextRound);
+  </script>
+</body>
+</html>

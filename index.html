@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>English Hero - Super Aventura de Inglês</title>
+  <title>English Train - Aprende inglês a brincar</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
@@ -12,14 +12,6 @@
       user-select: none;
       -webkit-user-select: none;
     }
-    .pulse-btn {
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.04); }
-      100% { transform: scale(1); }
-    }
     .bounce-emoji {
       animation: bounce 1.5s infinite alternate;
     }
@@ -27,473 +19,40 @@
       0% { transform: translateY(0); }
       100% { transform: translateY(-12px); }
     }
-    button, button:focus, button:active, button:focus-visible {
-      outline: none !important;
-      box-shadow: none !important;
-      border-color: #475569 !important;
+    a:focus-visible {
+      outline: 2px solid #6ee7b7;
+      outline-offset: 4px;
     }
   </style>
 </head>
 <body class="bg-slate-900 text-white min-h-screen flex items-center justify-center p-4">
-
-  <div class="w-full max-w-xl bg-slate-800 rounded-3xl p-6 shadow-2xl border-4 border-indigo-500/30 text-center relative overflow-hidden min-h-[580px] flex flex-col justify-between">
-    
-    <!-- ECRÃ INICIAL -->
-    <div id="start-screen" class="my-auto flex flex-col items-center justify-center space-y-6">
-      <div class="text-7xl bounce-emoji mb-2">🚀⚡</div>
-      <h1 class="text-4xl md:text-5xl font-black text-amber-400 tracking-wider drop-shadow-md">
-        ENGLISH HERO
-      </h1>
-      <p class="text-xl text-indigo-200 font-semibold">
-        Super Aventura de Inglês - 2.º Ano
-      </p>
-
-      <div class="bg-slate-900/60 p-4 rounded-2xl border border-indigo-500/20 text-sm text-slate-300 max-w-md space-y-2 text-left">
-        <p class="font-bold text-amber-300 text-center text-base">🎯 O TEU DESAFIO DE HOJE:</p>
-        <ul class="list-disc pl-5 space-y-1">
-          <li>30 Perguntas por ronda</li>
-          <li>Temas: Greetings, Colors, Numbers, Pronouns, Verb To Be & Prepositions</li>
-          <li>Sons e super pontos a cada resposta certa!</li>
-        </ul>
-      </div>
-
-      <button onclick="startGame()" class="pulse-btn bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-900 font-extrabold text-2xl py-4 px-10 rounded-full shadow-lg shadow-emerald-500/30 border-b-4 border-emerald-700 active:border-b-0 active:translate-y-1 transition">
-        COMEÇAR JOGO ⚡
-      </button>
-    </div>
-
-    <!-- ECRÃ DE JOGO -->
-    <div id="game-screen" class="hidden flex-1 flex flex-col justify-between">
+  <main class="w-full max-w-2xl bg-slate-800 rounded-3xl p-6 shadow-2xl border-4 border-indigo-500/30 text-center relative overflow-hidden min-h-[580px] flex flex-col justify-center">
+    <div class="my-auto flex flex-col items-center justify-center space-y-6 py-6">
+      <div class="text-7xl bounce-emoji" aria-hidden="true">🚂📚</div>
       <div>
-        <!-- Cabeçalho de Progresso -->
-        <div class="flex justify-between items-center bg-slate-900/80 px-4 py-3 rounded-2xl mb-4 border border-slate-700">
-          <div class="text-amber-400 font-bold text-lg" id="question-count">Perguntas: 1 / 30</div>
-          <div class="text-emerald-400 font-bold text-xl flex items-center gap-1" id="score-display">
-            ⭐ 0 PTS
-          </div>
-        </div>
-
-        <!-- Barra de Progresso -->
-        <div class="w-full bg-slate-900 h-3 rounded-full overflow-hidden mb-5 border border-slate-700">
-          <div id="progress-bar" class="bg-gradient-to-r from-indigo-500 to-emerald-400 h-full w-0 transition-all duration-300"></div>
-        </div>
-
-        <!-- Tag do Tema -->
-        <div class="inline-block bg-indigo-600 text-indigo-100 font-bold text-xs uppercase px-4 py-1.5 rounded-full mb-4 tracking-widest shadow-inner" id="topic-tag">
-          GREETINGS
-        </div>
-
-        <!-- Emoji e Pergunta -->
-        <div class="text-6xl my-2 filter drop-shadow animate-bounce" id="visual-emoji">👋</div>
-        <div class="text-xl md:text-2xl font-bold min-h-[70px] flex items-center justify-center text-slate-100 px-3 bg-slate-900/60 rounded-2xl border border-indigo-500/20 py-3" id="question-text">
-          A carregar pergunta...
-        </div>
+        <p class="text-sm font-bold uppercase tracking-[0.3em] text-emerald-300">English Train</p>
+        <h1 class="mt-2 text-4xl md:text-5xl font-black text-amber-400 tracking-wide drop-shadow-md">Aprende inglês a brincar</h1>
+        <p class="mt-3 text-lg text-indigo-200">Escolhe uma aventura e começa a aprender!</p>
       </div>
 
-      <!-- Opções de Resposta -->
-      <div class="grid grid-cols-2 gap-3 mt-4" id="options-grid">
-        <!-- Botões gerados via JS -->
-      </div>
+      <nav aria-label="Menu de aplicações" class="grid w-full max-w-lg gap-4 text-left sm:grid-cols-2">
+        <a href="english-hero.html" class="group rounded-3xl border-2 border-emerald-400/50 bg-gradient-to-br from-emerald-500/20 to-teal-500/10 p-5 text-left transition hover:-translate-y-1 hover:border-emerald-300 hover:bg-emerald-500/25">
+          <span class="text-4xl" aria-hidden="true">🚀</span>
+          <span class="mt-3 block text-xl font-extrabold text-white">English Hero</span>
+          <span class="mt-1 block text-sm text-slate-300">30 perguntas para pores o teu inglês à prova.</span>
+          <span class="mt-4 inline-flex rounded-full bg-emerald-400 px-4 py-2 text-sm font-extrabold text-slate-900 group-hover:bg-emerald-300">Abrir aplicação →</span>
+        </a>
+
+        <div class="rounded-3xl border-2 border-dashed border-slate-600 bg-slate-900/40 p-5 text-left" aria-label="Mais aplicações em breve">
+          <span class="text-4xl" aria-hidden="true">🧩</span>
+          <span class="mt-3 block text-xl font-extrabold text-slate-200">Mais aventuras</span>
+          <span class="mt-1 block text-sm text-slate-400">Novas aplicações educativas a caminho.</span>
+          <span class="mt-4 inline-flex rounded-full bg-slate-700 px-4 py-2 text-sm font-bold text-slate-300">Em breve</span>
+        </div>
+      </nav>
+
+      <p class="text-sm text-slate-400">Uma viagem divertida para aprender, praticar e ganhar confiança.</p>
     </div>
-
-    <!-- ECRÃ FINAL -->
-    <div id="end-screen" class="hidden my-auto flex flex-col items-center justify-center space-y-5">
-      <div class="text-8xl bounce-emoji" id="final-emoji">🏆</div>
-      <h2 class="text-3xl font-black text-amber-400">PARABÉNS, HERÓI!</h2>
-      <p class="text-lg text-slate-300">Completaste a tua missão de Inglês!</p>
-      
-      <div class="bg-slate-900/80 p-6 rounded-3xl border border-indigo-500/30 w-full max-w-sm my-2">
-        <div class="text-slate-400 font-bold uppercase text-xs tracking-wider">Pontuação Final</div>
-        <div class="text-5xl font-black text-emerald-400 my-1" id="final-score">0 PTS</div>
-        <div class="text-sm font-semibold text-slate-300 mt-2" id="accuracy-text">Acertaste em 0 de 30</div>
-      </div>
-
-      <button onclick="startGame()" class="pulse-btn bg-gradient-to-r from-amber-500 to-orange-400 hover:from-amber-400 hover:to-orange-300 text-slate-900 font-extrabold text-xl py-4 px-8 rounded-full shadow-lg shadow-amber-500/20 border-b-4 border-amber-700 active:border-b-0 active:translate-y-1 transition">
-        JOGAR OUTRA RONDA 🔄
-      </button>
-    </div>
-
-  </div>
-
-  <script>
-    let audioCtx = null;
-
-    function initAudio() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    }
-
-    function playSound(type) {
-      initAudio();
-      if (!audioCtx) return;
-
-      const now = audioCtx.currentTime;
-
-      if (type === 'correct') {
-        const notes = [523.25, 659.25, 783.99];
-        notes.forEach((freq, i) => {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(freq, now + i * 0.08);
-          
-          gain.gain.setValueAtTime(0.3, now + i * 0.08);
-          gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.18);
-          
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          
-          osc.start(now + i * 0.08);
-          osc.stop(now + i * 0.08 + 0.2);
-        });
-      } else {
-        const osc1 = audioCtx.createOscillator();
-        const osc2 = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-
-        osc1.type = 'sawtooth';
-        osc2.type = 'square';
-
-        osc1.frequency.setValueAtTime(164.81, now);
-        osc1.frequency.exponentialRampToValueAtTime(110.00, now + 0.25);
-
-        osc2.frequency.setValueAtTime(155.56, now);
-        osc2.frequency.exponentialRampToValueAtTime(103.83, now + 0.25);
-
-        gain.gain.setValueAtTime(0.3, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-
-        osc1.connect(gain);
-        osc2.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        osc1.start(now);
-        osc2.start(now);
-        osc1.stop(now + 0.3);
-        osc2.stop(now + 0.3);
-      }
-    }
-
-    const rawQuestions = [
-      // GREETINGS
-      { topic: "Greetings", q: "Como cumprimentas alguém em inglês de forma casual?", a: "Hi", options: ["Hi", "Goodbye", "Bed", "Pen"], img: "👋" },
-      { topic: "Greetings", q: "O que dizes quando te despedes de um amigo?", a: "Goodbye", options: ["Goodbye", "Good morning", "Yes", "Hello"], img: "🙋‍♂️" },
-      { topic: "Greetings", q: "Acordaste às 8h da manhã. O que dizes à tua família?", a: "Good morning", options: ["Good morning", "Good night", "Good afternoon", "Bye"], img: "🌅" },
-      { topic: "Greetings", q: "São 15h da tarde e encontras o teu professor. Como o cumprimentas?", a: "Good afternoon", options: ["Good afternoon", "Good night", "Good morning", "Hi"], img: "☀️" },
-      { topic: "Greetings", q: "Estás prestes a ir dormir para a cama. O que dizes?", a: "Good night", options: ["Good night", "Good morning", "Hello", "See you"], img: "🌙" },
-      { topic: "Greetings", q: "Alguém te dá um presente de aniversário. O que dizes?", a: "Thank you", options: ["Thank you", "Please", "Sorry", "Hello"], img: "🎁" },
-      { topic: "Greetings", q: "Estás a pedir um gelado ao empregado. O que dizes no fim do pedido?", a: "Please", options: ["Please", "Goodbye", "Welcome", "No"], img: "🍦" },
-      { topic: "Greetings", q: "Como dizes 'Até logo' em inglês?", a: "See you later", options: ["See you later", "Good morning", "Thank you", "Nice"], img: "⏳" },
-      { topic: "Greetings", q: "Sem querer tropeçaste no teu colega. O que dizes?", a: "Sorry", options: ["Sorry", "Please", "Good night", "Hello"], img: "😅" },
-      { topic: "Greetings", q: "Como perguntas o nome de um colega novo?", a: "What's your name?", options: ["What's your name?", "How old are you?", "Where is it?", "Who are you?"], img: "❓" },
-      { topic: "Greetings", q: "Para responderes 'O meu nome é Pedro', como dizes em inglês?", a: "My name is Pedro", options: ["My name is Pedro", "I am fine", "I like Pedro", "He is Pedro"], img: "👦" },
-      { topic: "Greetings", q: "Como perguntas 'Como estás?' em inglês?", a: "How are you?", options: ["How are you?", "What is this?", "Who is that?", "Where are you?"], img: "💬" },
-      { topic: "Greetings", q: "Qual é a resposta para 'How are you?'", a: "I'm fine, thank you", options: ["I'm fine, thank you", "My name is Tom", "Good night", "Blue"], img: "😊" },
-      { topic: "Greetings", q: "Quando queres desejar um bom fim de semana dizes:", a: "Have a nice weekend", options: ["Have a nice weekend", "Good morning", "Thank you", "Hello friend"], img: "🎉" },
-      { topic: "Greetings", q: "Como dizes 'Prazer em conhecer-te'?", a: "Nice to meet you", options: ["Nice to meet you", "See you tomorrow", "Good night", "Please"], img: "🤝" },
-      { topic: "Greetings", q: "O que dizes quando encontras um amigo à saída da escola?", a: "See you tomorrow", options: ["See you tomorrow", "Good morning", "Please", "Welcome"], img: "🏫" },
-      { topic: "Greetings", q: "Quando dizes 'Welcome', o que significa?", a: "Bem-vindo", options: ["Bem-vindo", "Adeus", "Obrigado", "Desculpa"], img: "🚪" },
-      { topic: "Greetings", q: "Como se diz 'Tem um bom dia'?", a: "Have a nice day", options: ["Have a nice day", "Good night", "Thank you", "Pardon"], img: "🌤️" },
-      { topic: "Greetings", q: "Qual destas palavras NÃO é uma saudação?", a: "Pencil", options: ["Pencil", "Hello", "Hi", "Good morning"], img: "✏️" },
-      { topic: "Greetings", q: "Se alguém te diz 'Thank you', podes responder:", a: "You're welcome", options: ["You're welcome", "Good night", "Bye", "Please"], img: "👍" },
-
-      // COLORS
-      { topic: "Colors", q: "Qual é a cor do morango e da maçã em inglês?", a: "Red", options: ["Red", "Blue", "Yellow", "Green"], img: "❓" },
-      { topic: "Colors", q: "De que cor é o céu num dia limpo?", a: "Blue", options: ["Blue", "Red", "Black", "Pink"], img: "❓" },
-      { topic: "Colors", q: "Qual é a cor do sol e da banana?", a: "Yellow", options: ["Yellow", "Green", "Purple", "White"], img: "❓" },
-      { topic: "Colors", q: "De que cor é a relva do campo?", a: "Green", options: ["Green", "Orange", "Red", "Brown"], img: "❓" },
-      { topic: "Colors", q: "Como dizes a cor do chocolate em inglês?", a: "Brown", options: ["Brown", "Yellow", "Purple", "Pink"], img: "❓" },
-      { topic: "Colors", q: "Qual é a cor de uma cenoura?", a: "Orange", options: ["Orange", "Blue", "Green", "White"], img: "❓" },
-      { topic: "Colors", q: "Como dizes a cor do flamingo ou do algodão doce?", a: "Pink", options: ["Pink", "Black", "Yellow", "Red"], img: "❓" },
-      { topic: "Colors", q: "Qual é a cor das uvas e das violetas?", a: "Purple", options: ["Purple", "Green", "Red", "Orange"], img: "❓" },
-      { topic: "Colors", q: "De que cor é a noite escura?", a: "Black", options: ["Black", "White", "Yellow", "Pink"], img: "❓" },
-      { topic: "Colors", q: "Qual é a cor da neve e do leite?", a: "White", options: ["White", "Black", "Blue", "Brown"], img: "❓" },
-      { topic: "Colors", q: "De que cor é um elefante ou uma nuvem de chuva?", a: "Grey", options: ["Grey", "Red", "Yellow", "Purple"], img: "❓" },
-      { topic: "Colors", q: "Traduz para português: 'The ball is RED'.", a: "A bola é vermelha", options: ["A bola é vermelha", "A bola é azul", "A bola é amarela", "A bola é verde"], img: "❓" },
-      { topic: "Colors", q: "Traduz para português: 'A green frog'.", a: "Um sapo verde", options: ["Um sapo verde", "Um sapo azul", "Um sapo amarelo", "Um sapo castanho"], img: "❓" },
-      { topic: "Colors", q: "Como dizes 'Um gato preto' em inglês?", a: "A black cat", options: ["A black cat", "A white cat", "A red cat", "A pink cat"], img: "❓" },
-      { topic: "Colors", q: "Se misturares RED e YELLOW obténs:", a: "Orange", options: ["Orange", "Purple", "Green", "Black"], img: "🎨" },
-      { topic: "Colors", q: "Se misturares BLUE e YELLOW obténs:", a: "Green", options: ["Green", "Red", "Pink", "Brown"], img: "🎨" },
-      { topic: "Colors", q: "Como dizes 'Amarelo' em inglês?", a: "Yellow", options: ["Yellow", "Orange", "Purple", "White"], img: "❓" },
-      { topic: "Colors", q: "Como dizes 'Roxo' em inglês?", a: "Purple", options: ["Purple", "Pink", "Red", "Grey"], img: "❓" },
-
-      // NUMBERS
-      { topic: "Numbers", q: "Quantos narizes tens na cara?", a: "One", options: ["One", "Two", "Three", "Four"], img: "👃" },
-      { topic: "Numbers", q: "Quantos olhos tem uma pessoa?", a: "Two", options: ["Two", "One", "Five", "Ten"], img: "👀" },
-      { topic: "Numbers", q: "Quantas rodas tem um triciclo?", a: "Three", options: ["Three", "Two", "Four", "Six"], img: "🛺" },
-      { topic: "Numbers", q: "Quantas patas tem um cão ou um gato?", a: "Four", options: ["Four", "Two", "Three", "Eight"], img: "🐕" },
-      { topic: "Numbers", q: "Quantos dedos tens numa mão?", a: "Five", options: ["Five", "Four", "Six", "Ten"], img: "🖐️" },
-      { topic: "Numbers", q: "Qual é o número que vem a seguir ao FIVE?", a: "Six", options: ["Six", "Seven", "Four", "Five"], img: "6️⃣" },
-      { topic: "Numbers", q: "Quantos dias tem uma semana?", a: "Seven", options: ["Seven", "Five", "Six", "Ten"], img: "📅" },
-      { topic: "Numbers", q: "Quantas patas tem uma aranha?", a: "Eight", options: ["Eight", "Six", "Ten", "Four"], img: "🕷️" },
-      { topic: "Numbers", q: "Qual é o número que vem antes do TEN?", a: "Nine", options: ["Nine", "Eight", "Seven", "Six"], img: "9️⃣" },
-      { topic: "Numbers", q: "Quantos dedos tens no total nas duas mãos?", a: "Ten", options: ["Ten", "Five", "Eight", "Nine"], img: "👐" },
-      { topic: "Numbers", q: "Qual é o resultado de: TWO + TWO?", a: "Four", options: ["Four", "Three", "Five", "Six"], img: "➕" },
-      { topic: "Numbers", q: "Qual é o resultado de: FIVE + FIVE?", a: "Ten", options: ["Ten", "Eight", "Seven", "Nine"], img: "➕" },
-      { topic: "Numbers", q: "Qual é o resultado de: THREE + THREE?", a: "Six", options: ["Six", "Five", "Seven", "Eight"], img: "➕" },
-      { topic: "Numbers", q: "Qual é o resultado de: ONE + THREE?", a: "Four", options: ["Four", "Two", "Five", "Three"], img: "➕" },
-      { topic: "Numbers", q: "Como dizes o número 7 em inglês?", a: "Seven", options: ["Seven", "Six", "Eight", "Nine"], img: "7️⃣" },
-      { topic: "Numbers", q: "Como dizes o número 3 em inglês?", a: "Three", options: ["Three", "Two", "Four", "One"], img: "3️⃣" },
-      { topic: "Numbers", q: "Como dizes o número 8 em inglês?", a: "Eight", options: ["Eight", "Nine", "Seven", "Ten"], img: "8️⃣" },
-
-      // PERSONAL PRONOUNS
-      { topic: "Personal Pronouns", q: "Quando falas de ti próprio, que pronome usas?", a: "I", options: ["I", "He", "She", "They"], img: "🙋‍♂️" },
-      { topic: "Personal Pronouns", q: "Para falar de um rapaz ou homem usas:", a: "He", options: ["He", "She", "It", "We"], img: "👦" },
-      { topic: "Personal Pronouns", q: "Para falar de uma rapariga ou mulher usas:", a: "She", options: ["She", "He", "It", "They"], img: "👧" },
-      { topic: "Personal Pronouns", q: "Para falar de um animal, objeto ou brinquedo no singular usas:", a: "It", options: ["It", "He", "She", "I"], img: "🐶" },
-      { topic: "Personal Pronouns", q: "Para falar de 'Nós' (eu e os meus amigos) usas:", a: "We", options: ["We", "They", "You", "He"], img: "👫" },
-      { topic: "Personal Pronouns", q: "Para falar de um grupo de outras pessoas ('Eles' ou 'Elas') usas:", a: "They", options: ["They", "We", "I", "He"], img: "🧑‍🤝‍🧑" },
-      { topic: "Personal Pronouns", q: "Quando apontas para a pessoa com quem estás a falar ('Tu'), usas:", a: "You", options: ["You", "I", "He", "She"], img: "👉" },
-      { topic: "Personal Pronouns", q: "Qual é o pronome inglês correto para 'O Pedro'?", a: "He", options: ["He", "She", "It", "We"], img: "👦" },
-      { topic: "Personal Pronouns", q: "Qual é o pronome inglês correto para 'A Maria'?", a: "She", options: ["She", "He", "It", "They"], img: "👧" },
-      { topic: "Personal Pronouns", q: "Qual é o pronome inglês correto para 'O carro'?", a: "It", options: ["It", "He", "She", "They"], img: "🚗" },
-      { topic: "Personal Pronouns", q: "Qual é o pronome inglês correto para 'Eu e o meu irmão'?", a: "We", options: ["We", "They", "He", "You"], img: "👦👧" },
-      { topic: "Personal Pronouns", q: "Qual é o pronome inglês correto para 'Os cães' (plural)?", a: "They", options: ["They", "It", "We", "He"], img: "🐕🐕" },
-      { topic: "Personal Pronouns", q: "O pronome 'SHE' significa:", a: "Ela", options: ["Ela", "Ele", "Eu", "Nós"], img: "👧" },
-      { topic: "Personal Pronouns", q: "O pronome 'HE' significa:", a: "Ele", options: ["Ele", "Ela", "Eles", "Tu"], img: "👦" },
-
-      // VERB TO BE
-      { topic: "Verb To Be", q: "Completa a frase: 'I ___ a boy.'", a: "am", options: ["am", "is", "are", "be"], img: "👦" },
-      { topic: "Verb To Be", q: "Completa a frase: 'He ___ my friend.'", a: "is", options: ["is", "am", "are", "be"], img: "😄" },
-      { topic: "Verb To Be", q: "Completa a frase: 'She ___ a student.'", a: "is", options: ["is", "are", "am", "be"], img: "🎒" },
-      { topic: "Verb To Be", q: "Completa a frase: 'It ___ a red car.'", a: "is", options: ["is", "am", "are", "be"], img: "🚘" },
-      { topic: "Verb To Be", q: "Completa a frase: 'You ___ super smart!'", a: "are", options: ["are", "is", "am", "be"], img: "💡" },
-      { topic: "Verb To Be", q: "Completa a frase: 'We ___ happy today.'", a: "are", options: ["are", "is", "am", "be"], img: "🥳" },
-      { topic: "Verb To Be", q: "Completa a frase: 'They ___ playing football.'", a: "are", options: ["are", "is", "am", "be"], img: "⚽" },
-      { topic: "Verb To Be", q: "Qual é a forma correta do verbo: 'The dog ___ big.'", a: "is", options: ["is", "are", "am", "be"], img: "🐕" },
-      { topic: "Verb To Be", q: "Qual é a forma correta do verbo: 'My mother ___ nice.'", a: "is", options: ["is", "are", "am", "be"], img: "👩" },
-      { topic: "Verb To Be", q: "Qual é a forma correta do verbo: 'The cats ___ cute.'", a: "are", options: ["are", "is", "am", "be"], img: "🐱🐱" },
-      { topic: "Verb To Be", q: "Como dizes em inglês: 'Eu sou um herói'?", a: "I am a hero", options: ["I am a hero", "I is a hero", "I are a hero", "I be a hero"], img: "🦸‍♂️" },
-      { topic: "Verb To Be", q: "Como dizes em inglês: 'Ele é alto'?", a: "He is tall", options: ["He is tall", "He am tall", "He are tall", "He be tall"], img: "📏" },
-      { topic: "Verb To Be", q: "Qual está INCORRETO?", a: "I is happy", options: ["I is happy", "She is happy", "We are happy", "He is happy"], img: "❌" },
-      { topic: "Verb To Be", q: "Qual está CORRETO?", a: "They are my friends", options: ["They are my friends", "They is my friends", "They am my friends", "They be my friends"], img: "✅" },
-
-      // PREPOSITIONS
-      { topic: "Prepositions", q: "O gato está guardado no interior da caixa. O gato está:", a: "In", options: ["In", "On", "Under", "Behind"], img: "📦" },
-      { topic: "Prepositions", q: "O livro está encostado à superfície da mesa. O livro está:", a: "On", options: ["On", "In", "Under", "Next to"], img: "📖" },
-      { topic: "Prepositions", q: "O cão está escondido por baixo da cama. O cão está:", a: "Under", options: ["Under", "On", "In", "Behind"], img: "🐕" },
-      { topic: "Prepositions", q: "Como se diz 'Dentro' em inglês?", a: "In", options: ["In", "On", "Under", "Behind"], img: "📥" },
-      { topic: "Prepositions", q: "Como se diz 'Em cima de' em inglês?", a: "On", options: ["On", "In", "Under", "Next to"], img: "🔝" },
-      { topic: "Prepositions", q: "Como se diz 'Debaixo de' em inglês?", a: "Under", options: ["Under", "On", "In", "Behind"], img: "⬇️" },
-      { topic: "Prepositions", q: "O menino está atrás da árvore. Ele está:", a: "Behind", options: ["Behind", "In", "On", "Under"], img: "🌳" },
-      { topic: "Prepositions", q: "O brinquedo está ao lado da cadeira. O brinquedo está:", a: "Next to", options: ["Next to", "Under", "In", "On"], img: "🪑" },
-      { topic: "Prepositions", q: "Traduz: 'The apple is ON the table.'", a: "A maçã está em cima da mesa", options: ["A maçã está em cima da mesa", "A maçã está dentro da mesa", "A maçã está debaixo da mesa", "A maçã está atrás da mesa"], img: "🍎" },
-      { topic: "Prepositions", q: "Traduz: 'The pencil is IN the pencil case.'", a: "O lápis está dentro do estojo", options: ["O lápis está dentro do estojo", "O lápis está em cima do estojo", "O lápis está debaixo do estojo", "O lápis está ao lado do estojo"], img: "✏️" },
-      { topic: "Prepositions", q: "Traduz: 'The ball is UNDER the chair.'", a: "A bola está debaixo da cadeira", options: ["A bola está debaixo da cadeira", "A bola está dentro da cadeira", "A bola está em cima da cadeira", "A bola está atrás da cadeira"], img: "⚽" },
-      { topic: "Prepositions", q: "Qual a preposição para dizer 'Dentro do saco'?", a: "In the bag", options: ["In the bag", "On the bag", "Under the bag", "Behind the bag"], img: "🎒" }
-    ];
-
-    function buildQuestionPool() {
-      let pool = [];
-      let idCounter = 1;
-
-      rawQuestions.forEach(item => {
-        pool.push({
-          id: idCounter++,
-          topic: item.topic,
-          q: item.q,
-          a: item.a,
-          options: [...item.options].sort(() => Math.random() - 0.5),
-          img: item.img
-        });
-      });
-
-      const colors = [
-        { name: "Yellow", pt: "Amarelo", img: "❓" },
-        { name: "Blue", pt: "Azul", img: "❓" },
-        { name: "Red", pt: "Vermelho", img: "❓" },
-        { name: "Green", pt: "Verde", img: "❓" },
-        { name: "Orange", pt: "Laranja", img: "❓" },
-        { name: "Purple", pt: "Roxo", img: "❓" },
-        { name: "Pink", pt: "Rosa", img: "❓" },
-        { name: "Black", pt: "Preto", img: "❓" },
-        { name: "White", pt: "Branco", img: "❓" },
-        { name: "Brown", pt: "Castanho", img: "❓" }
-      ];
-
-      colors.forEach(c => {
-        pool.push({
-          id: idCounter++,
-          topic: "Colors",
-          q: `Como se traduz a palavra '${c.name}' para português?`,
-          a: c.pt,
-          options: [c.pt, "Azul", "Verde", "Preto"].filter((v, i, a) => a.indexOf(v) === i).slice(0,4).sort(() => Math.random() - 0.5),
-          img: c.img
-        });
-      });
-
-      const nums = [
-        { val: "1", word: "One", img: "1️⃣" },
-        { val: "2", word: "Two", img: "2️⃣" },
-        { val: "3", word: "Three", img: "3️⃣" },
-        { val: "4", word: "Four", img: "4️⃣" },
-        { val: "5", word: "Five", img: "5️⃣" },
-        { val: "6", word: "Six", img: "6️⃣" },
-        { val: "7", word: "Seven", img: "7️⃣" },
-        { val: "8", word: "Eight", img: "8️⃣" },
-        { val: "9", word: "Nine", img: "9️⃣" },
-        { val: "10", word: "Ten", img: "🔟" }
-      ];
-
-      nums.forEach(n => {
-        pool.push({
-          id: idCounter++,
-          topic: "Numbers",
-          q: `Como se escreve o número ${n.val} em inglês?`,
-          a: n.word,
-          options: [n.word, "One", "Five", "Ten"].filter((v, i, a) => a.indexOf(v) === i).slice(0,4).sort(() => Math.random() - 0.5),
-          img: n.img
-        });
-      });
-
-      return pool;
-    }
-
-    const fullQuestionBank = buildQuestionPool();
-    let currentRoundQuestions = [];
-    let currentIndex = 0;
-    let score = 0;
-    let canAnswer = true;
-    let lastCorrectIndex = -1;
-
-    function startGame() {
-      initAudio();
-      score = 0;
-      currentIndex = 0;
-      lastCorrectIndex = -1;
-      
-      let shuffled = [...fullQuestionBank].sort(() => Math.random() - 0.5);
-      const selectedIds = new Set();
-      currentRoundQuestions = [];
-
-      for (let q of shuffled) {
-        if (!selectedIds.has(q.id)) {
-          selectedIds.add(q.id);
-          currentRoundQuestions.push(q);
-        }
-        if (currentRoundQuestions.length === 30) break;
-      }
-
-      document.getElementById('start-screen').classList.add('hidden');
-      document.getElementById('end-screen').classList.add('hidden');
-      document.getElementById('game-screen').classList.remove('hidden');
-
-      loadQuestion();
-    }
-
-    function loadQuestion() {
-      canAnswer = true;
-      const q = currentRoundQuestions[currentIndex];
-
-      document.getElementById('question-count').innerText = `Pergunta: ${currentIndex + 1} / 30`;
-      document.getElementById('score-display').innerText = `⭐ ${score} PTS`;
-      document.getElementById('progress-bar').style.width = `${((currentIndex) / 30) * 100}%`;
-      
-      document.getElementById('topic-tag').innerText = q.topic;
-      document.getElementById('visual-emoji').innerText = q.img;
-      document.getElementById('question-text').innerText = q.q;
-
-      const grid = document.getElementById('options-grid');
-      grid.replaceChildren();
-
-      let opts = [...new Set(q.options)];
-      if (!opts.includes(q.a)) opts.push(q.a);
-      
-      const fallbacks = ["Yes", "No", "Blue", "Cat", "Run", "Sun", "Apple", "Dog"];
-      for (let f of fallbacks) {
-        if (!opts.includes(f) && opts.length < 4) opts.push(f);
-      }
-      opts = opts.slice(0, 4);
-
-      const wrongOpts = opts.filter(o => o !== q.a).sort(() => Math.random() - 0.5);
-
-      let newCorrectIndex;
-      do {
-        newCorrectIndex = Math.floor(Math.random() * 4);
-      } while (newCorrectIndex === lastCorrectIndex);
-      lastCorrectIndex = newCorrectIndex;
-
-      const finalOptions = [];
-      let wrongIdx = 0;
-      for (let i = 0; i < 4; i++) {
-        if (i === newCorrectIndex) {
-          finalOptions.push(q.a);
-        } else {
-          finalOptions.push(wrongOpts[wrongIdx++]);
-        }
-      }
-
-      finalOptions.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'w-full bg-slate-700 hover:bg-slate-600 border-2 border-slate-600 hover:border-slate-500 text-white font-bold py-3.5 px-3 rounded-2xl text-lg shadow-md transition transform active:scale-95 flex items-center justify-center text-center min-h-[56px] focus:outline-none focus:ring-0 focus:border-slate-600';
-        btn.innerText = opt;
-        btn.onclick = (e) => {
-          e.preventDefault();
-          if (document.activeElement) document.activeElement.blur();
-          checkAnswer(btn, opt, q.a);
-        };
-        grid.appendChild(btn);
-      });
-    }
-
-    function checkAnswer(btn, selected, correct) {
-      if (!canAnswer) return;
-      canAnswer = false;
-
-      const buttons = document.querySelectorAll('#options-grid button');
-      buttons.forEach(b => {
-        b.blur();
-        b.disabled = true;
-      });
-
-      if (selected === correct) {
-        btn.className = 'w-full bg-emerald-500 border-2 border-emerald-500 text-white font-bold py-3.5 px-3 rounded-2xl text-lg shadow-lg scale-105 flex items-center justify-center text-center min-h-[56px] animate-pulse focus:outline-none focus:ring-0 focus:border-emerald-500';
-        playSound('correct');
-        score += 100;
-      } else {
-        btn.className = 'w-full bg-rose-600 border-2 border-rose-600 text-white font-bold py-3.5 px-3 rounded-2xl text-lg shadow-md flex items-center justify-center text-center min-h-[56px] focus:outline-none focus:ring-0 focus:border-rose-600';
-        playSound('wrong');
-        
-        buttons.forEach(b => {
-          if (b.innerText === correct) {
-            b.className = 'w-full bg-emerald-500/90 border-2 border-emerald-500/90 text-white font-bold py-3.5 px-3 rounded-2xl text-lg shadow-md flex items-center justify-center text-center min-h-[56px] focus:outline-none focus:ring-0 focus:border-emerald-500/90';
-          }
-        });
-      }
-
-      document.getElementById('score-display').innerText = `⭐ ${score} PTS`;
-
-      setTimeout(() => {
-        currentIndex++;
-        if (currentIndex < 30) {
-          loadQuestion();
-        } else {
-          endGame();
-        }
-      }, 1300);
-    }
-
-    function endGame() {
-      document.getElementById('game-screen').classList.add('hidden');
-      document.getElementById('end-screen').classList.remove('hidden');
-
-      document.getElementById('final-score').innerText = `${score} PTS`;
-      const correctCount = Math.round(score / 100);
-      document.getElementById('accuracy-text').innerText = `Acertaste em ${correctCount} de 30 perguntas!`;
-      
-      if (correctCount >= 25) {
-        document.getElementById('final-emoji').innerText = "🏆";
-      } else if (correctCount >= 18) {
-        document.getElementById('final-emoji').innerText = "🌟";
-      } else {
-        document.getElementById('final-emoji').innerText = "⚡";
-      }
-    }
-  </script>
+  </main>
 </body>
 </html>

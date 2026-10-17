@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f172a">
+  <title>Escreve as Cores - English Train</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Fredoka', cursive, sans-serif; user-select: none; -webkit-user-select: none; }
+    button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid #f9a8d4; outline-offset: 4px; }
+    input { user-select: text; -webkit-user-select: text; }
+    .bounce-emoji { animation: bounce 1.5s infinite alternate; }
+    @keyframes bounce { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-900 p-4 text-white sm:p-6">
+  <main class="mx-auto flex min-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border-4 border-orange-500/30 bg-slate-800 p-5 text-center shadow-2xl sm:min-h-[580px] sm:p-7">
+    <section id="start-screen" class="my-auto flex flex-col items-center justify-center space-y-5 py-4">
+      <a href="index.html" class="self-start rounded-full bg-slate-700 px-4 py-2 text-sm font-bold text-slate-200 transition hover:bg-slate-600">← Menu inicial</a>
+      <div class="bounce-emoji text-7xl" aria-hidden="true">🔤🌈</div>
+      <div>
+        <p class="text-sm font-bold uppercase tracking-[0.25em] text-orange-300">English Train · 2.º ano</p>
+        <h1 class="mt-2 text-4xl font-black tracking-wide text-orange-300 drop-shadow-md sm:text-5xl">ESCREVE AS CORES</h1>
+        <p class="mt-3 text-lg text-indigo-200">Completa o nome da cor em inglês!</p>
+      </div>
+      <div class="w-full max-w-md rounded-2xl border border-orange-500/20 bg-slate-900/60 p-4 text-left text-sm text-slate-300">
+        <p class="mb-2 text-center text-base font-bold text-orange-300">🎯 COMO JOGAR</p>
+        <ul class="space-y-1.5 pl-5">
+          <li class="list-disc">Observa a cor e as letras que já estão na palavra.</li>
+          <li class="list-disc">Toca nas linhas vazias e escreve cada letra no seu lugar.</li>
+          <li class="list-disc">Cada palavra mostra 1 ou 2 letras como pista.</li>
+          <li class="list-disc">Completa 11 palavras para terminar a partida.</li>
+        </ul>
+      </div>
+      <button id="start-button" type="button" class="rounded-full bg-gradient-to-r from-orange-400 to-amber-400 px-9 py-4 text-xl font-extrabold text-slate-900 shadow-lg shadow-orange-500/20 transition hover:scale-105 hover:from-orange-300 hover:to-amber-300 active:scale-95">
+        COMEÇAR A JOGAR 🔤
+      </button>
+    </section>
+
+    <section id="game-screen" class="hidden flex-1 flex-col justify-between" aria-labelledby="question-title">
+      <div>
+        <header class="mb-4 flex items-center justify-between gap-2 rounded-2xl border border-slate-700 bg-slate-900/80 px-3 py-3 sm:px-4">
+          <a href="index.html" class="shrink-0 rounded-full bg-slate-700 px-3 py-2 text-sm font-bold text-slate-200 transition hover:bg-slate-600">Menu</a>
+          <p id="question-count" class="text-sm font-bold text-orange-300 sm:text-base" aria-live="polite">Cor 1 de 11</p>
+          <p id="score-display" class="shrink-0 text-base font-bold text-emerald-400 sm:text-lg" aria-label="Pontuação">⭐ 0</p>
+        </header>
+
+        <div class="mb-5 h-3 w-full overflow-hidden rounded-full border border-slate-700 bg-slate-900" role="progressbar" aria-label="Progresso do jogo" aria-valuemin="0" aria-valuemax="11" aria-valuenow="0">
+          <div id="progress-bar" class="h-full w-0 rounded-full bg-gradient-to-r from-orange-500 to-amber-300 transition-all duration-300"></div>
+        </div>
+        <div class="mb-4 inline-block rounded-full bg-orange-600 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-orange-100 shadow-inner">Completa a palavra</div>
+        <div class="mb-4 flex min-h-48 flex-col items-center justify-center rounded-3xl border-2 border-orange-500/20 bg-slate-900/60 px-4 py-5">
+          <div id="color-swatch" class="h-24 w-24 rounded-full border-4 border-white/40 shadow-xl sm:h-28 sm:w-28" aria-hidden="true"></div>
+          <h2 id="question-title" class="mt-4 text-lg font-bold text-slate-100 sm:text-xl">Como se escreve esta cor em inglês?</h2>
+        </div>
+        <p id="letter-hint" class="mb-3 text-sm text-indigo-200">Toca numa linha e escreve a letra que falta nesse lugar.</p>
+        <div id="word-display" class="mb-4 flex min-h-12 items-center justify-center gap-1.5 text-3xl font-black tracking-widest text-white sm:gap-2 sm:text-4xl" aria-label="Palavra incompleta"></div>
+      </div>
+
+      <form id="answer-form" class="mx-auto w-full max-w-md" aria-label="Completar o nome da cor">
+        <button id="check-button" type="submit" class="min-h-14 rounded-2xl bg-orange-400 px-6 py-3 font-extrabold text-slate-900 transition hover:bg-orange-300 active:scale-95">VERIFICAR ✓</button>
+        <p id="feedback" class="mt-4 min-h-8 text-lg font-bold" role="status" aria-live="polite"></p>
+        <button id="next-button" type="button" class="mx-auto mt-2 hidden rounded-full bg-orange-400 px-7 py-3 font-extrabold text-slate-900 transition hover:bg-orange-300">
+          Próxima cor →
+        </button>
+      </form>
+    </section>
+
+    <section id="end-screen" class="my-auto hidden flex-col items-center justify-center space-y-5 py-4" aria-labelledby="end-title">
+      <a href="index.html" class="self-start rounded-full bg-slate-700 px-4 py-2 text-sm font-bold text-slate-200 transition hover:bg-slate-600">← Menu inicial</a>
+      <div id="final-emoji" class="bounce-emoji text-8xl" aria-hidden="true">🏆</div>
+      <div>
+        <h2 id="end-title" class="text-3xl font-black text-orange-300">MESTRE DAS CORES!</h2>
+        <p class="mt-2 text-lg text-slate-300">Completaste todas as palavras!</p>
+      </div>
+      <div class="my-2 w-full max-w-sm rounded-3xl border border-orange-500/30 bg-slate-900/80 p-6">
+        <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Pontuação final</p>
+        <p id="final-score" class="my-1 text-5xl font-black text-emerald-400">0 pontos</p>
+        <p id="accuracy-text" class="mt-2 text-sm font-semibold text-slate-300">Completaste 0 de 11 palavras.</p>
+      </div>
+      <button id="replay-button" type="button" class="rounded-full bg-gradient-to-r from-orange-400 to-amber-400 px-8 py-4 text-lg font-extrabold text-slate-900 shadow-lg shadow-orange-500/20 transition hover:scale-105 hover:from-orange-300 hover:to-amber-300 active:scale-95">
+        JOGAR OUTRA VEZ 🔄
+      </button>
+    </section>
+  </main>
+
+  <script>
+    const colors = [
+      { name: "red", hex: "#ef4444" },
+      { name: "blue", hex: "#3b82f6" },
+      { name: "yellow", hex: "#facc15" },
+      { name: "green", hex: "#22c55e" },
+      { name: "brown", hex: "#a16207" },
+      { name: "orange", hex: "#f97316" },
+      { name: "pink", hex: "#ec4899" },
+      { name: "purple", hex: "#a855f7" },
+      { name: "black", hex: "#111827" },
+      { name: "white", hex: "#f8fafc" },
+      { name: "grey", hex: "#94a3b8" }
+    ];
+    const startScreen = document.getElementById("start-screen");
+    const gameScreen = document.getElementById("game-screen");
+    const endScreen = document.getElementById("end-screen");
+    const answerForm = document.getElementById("answer-form");
+    const wordDisplay = document.getElementById("word-display");
+    const feedback = document.getElementById("feedback");
+    const nextButton = document.getElementById("next-button");
+    const progressBar = document.getElementById("progress-bar");
+    const progressTrack = progressBar.parentElement;
+    let roundColors = [];
+    let questionIndex = 0;
+    let score = 0;
+    let correctAnswers = 0;
+    let currentMissingLetters = "";
+    let letterInputs = [];
+    let canAnswer = true;
+
+    function shuffle(items) {
+      const shuffled = [...items];
+      for (let index = shuffled.length - 1; index > 0; index--) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+      }
+      return shuffled;
+    }
+
+    function startGame() {
+      roundColors = shuffle(colors);
+      questionIndex = 0;
+      score = 0;
+      correctAnswers = 0;
+      document.getElementById("score-display").textContent = "⭐ 0";
+      startScreen.classList.add("hidden");
+      endScreen.classList.add("hidden");
+      gameScreen.classList.remove("hidden");
+      gameScreen.classList.add("flex");
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      canAnswer = true;
+      nextButton.classList.add("hidden");
+      answerForm.querySelector("#check-button").disabled = false;
+      const color = roundColors[questionIndex];
+      const letterCount = Math.random() < 0.5 ? 1 : 2;
+      const visiblePositions = new Set(shuffle(color.name.split("").map((_, index) => index)).slice(0, letterCount));
+      currentMissingLetters = color.name.split("").filter((_, index) => !visiblePositions.has(index)).join("");
+      letterInputs = [];
+
+      document.getElementById("question-count").textContent = `Cor ${questionIndex + 1} de ${roundColors.length}`;
+      document.getElementById("color-swatch").style.backgroundColor = color.hex;
+      document.getElementById("letter-hint").textContent = `Já tens ${letterCount} ${letterCount === 1 ? "letra" : "letras"}. Escreve cada letra que falta na linha certa.`;
+      wordDisplay.replaceChildren();
+      [...color.name].forEach((letter, index) => {
+        let character;
+        if (visiblePositions.has(index)) {
+          character = document.createElement("span");
+          character.className = "inline-flex min-w-7 justify-center border-b-4 border-emerald-400 px-1 text-emerald-300 sm:min-w-9";
+          character.textContent = letter;
+          character.setAttribute("aria-hidden", "true");
+        } else {
+          character = document.createElement("input");
+          character.type = "text";
+          character.maxLength = 1;
+          character.autocomplete = "off";
+          character.autocapitalize = "none";
+          character.spellcheck = false;
+          character.inputMode = "text";
+          character.className = "inline-flex h-12 w-8 min-w-7 justify-center rounded-t-md border-0 border-b-4 border-slate-500 bg-transparent p-0 text-center text-3xl font-black lowercase text-white outline-none transition focus:border-orange-300 focus:bg-orange-500/10 sm:w-10 sm:text-4xl";
+          character.setAttribute("aria-label", `Letra em falta, posição ${index + 1}`);
+          character.setAttribute("aria-describedby", "letter-hint feedback");
+          character.dataset.position = String(index);
+          character.addEventListener("input", handleLetterInput);
+          character.addEventListener("keydown", handleLetterKeydown);
+          letterInputs.push(character);
+        }
+        wordDisplay.appendChild(character);
+      });
+      wordDisplay.setAttribute("aria-label", `Palavra com ${color.name.length} letras; ${letterCount === 1 ? "uma letra apresentada" : `${letterCount} letras apresentadas`} e ${currentMissingLetters.length} em falta.`);
+      feedback.textContent = "";
+      feedback.className = "mt-4 min-h-8 text-lg font-bold";
+      progressBar.style.width = `${(questionIndex / roundColors.length) * 100}%`;
+      progressTrack.setAttribute("aria-valuenow", String(questionIndex));
+      letterInputs[0]?.focus();
+    }
+
+    function handleLetterInput(event) {
+      const input = event.currentTarget;
+      input.value = input.value.toLowerCase().replace(/[^a-z]/g, "").slice(-1);
+      if (input.value) {
+        const currentIndex = letterInputs.indexOf(input);
+        letterInputs[currentIndex + 1]?.focus();
+      }
+    }
+
+    function handleLetterKeydown(event) {
+      if (event.key !== "Backspace" || event.currentTarget.value) return;
+      const currentIndex = letterInputs.indexOf(event.currentTarget);
+      if (currentIndex > 0) {
+        letterInputs[currentIndex - 1].focus();
+        letterInputs[currentIndex - 1].value = "";
+      }
+    }
+
+    function checkAnswer(event) {
+      event.preventDefault();
+      if (!canAnswer) return;
+      const answer = letterInputs.map((input) => input.value).join("");
+      if (letterInputs.some((input) => !input.value)) {
+        feedback.textContent = "Preenche todas as linhas primeiro!";
+        feedback.className = "mt-4 min-h-8 text-lg font-bold text-amber-200";
+        letterInputs.find((input) => !input.value)?.focus();
+        return;
+      }
+      if (answer !== currentMissingLetters) {
+        feedback.textContent = "Ainda não. Tenta outra vez! Escreve apenas as letras em falta.";
+        feedback.className = "mt-4 min-h-8 text-lg font-bold text-amber-200";
+        letterInputs.forEach((input) => { input.value = ""; });
+        letterInputs[0]?.focus();
+        return;
+      }
+
+      canAnswer = false;
+      correctAnswers++;
+      score += 100;
+      document.getElementById("score-display").textContent = `⭐ ${score}`;
+      const color = roundColors[questionIndex];
+      wordDisplay.replaceChildren();
+      [...color.name].forEach((letter) => {
+        const character = document.createElement("span");
+        character.className = "inline-flex min-w-7 justify-center border-b-4 border-emerald-400 px-1 text-emerald-300 sm:min-w-9";
+        character.textContent = letter;
+        character.setAttribute("aria-hidden", "true");
+        wordDisplay.appendChild(character);
+      });
+      wordDisplay.setAttribute("aria-label", `Resposta correta: ${color.name}.`);
+      letterInputs.forEach((input) => { input.disabled = true; });
+      answerForm.querySelector("#check-button").disabled = true;
+      feedback.textContent = `Muito bem! ${color.name.toUpperCase()}! ⭐`;
+      feedback.className = "mt-4 min-h-8 text-lg font-bold text-emerald-300";
+      progressBar.style.width = `${((questionIndex + 1) / roundColors.length) * 100}%`;
+      progressTrack.setAttribute("aria-valuenow", String(questionIndex + 1));
+      nextButton.textContent = questionIndex === roundColors.length - 1 ? "Ver resultado 🏆" : "Próxima cor →";
+      nextButton.classList.remove("hidden");
+      nextButton.focus();
+    }
+
+    function nextQuestion() {
+      questionIndex++;
+      if (questionIndex < roundColors.length) {
+        loadQuestion();
+      } else {
+        endGame();
+      }
+    }
+
+    function endGame() {
+      gameScreen.classList.add("hidden");
+      gameScreen.classList.remove("flex");
+      endScreen.classList.remove("hidden");
+      endScreen.classList.add("flex");
+      document.getElementById("final-score").textContent = `${score} pontos`;
+      document.getElementById("accuracy-text").textContent = `Completaste ${correctAnswers} de ${roundColors.length} palavras.`;
+      document.getElementById("final-emoji").textContent = correctAnswers === roundColors.length ? "🏆" : "🌟";
+      document.getElementById("replay-button").focus();
+    }
+
+    document.getElementById("start-button").addEventListener("click", startGame);
+    document.getElementById("replay-button").addEventListener("click", startGame);
+    nextButton.addEventListener("click", nextQuestion);
+    answerForm.addEventListener("submit", checkAnswer);
+  </script>
+</body>
+</html>

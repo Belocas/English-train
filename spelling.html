@@ -63,6 +63,7 @@
         <div class="mb-5 h-3 w-full overflow-hidden rounded-full border border-slate-700 bg-slate-900" role="progressbar" aria-label="Progresso do jogo" aria-valuemin="0" aria-valuemax="30" aria-valuenow="0">
           <div id="progress-bar" class="h-full w-0 rounded-full bg-gradient-to-r from-indigo-500 to-fuchsia-400 transition-all duration-300"></div>
         </div>
+        <p id="correct-count" class="mb-4 text-right text-sm font-bold text-emerald-300" aria-live="polite" aria-atomic="true">Respostas certas: 0 / 30</p>
         <div class="mb-4 flex items-center justify-between gap-2">
           <span id="category-badge" class="rounded-full bg-violet-600 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-violet-100">School</span>
           <button id="reveal-button" type="button" class="rounded-full border border-violet-400/30 bg-violet-900/40 px-3 py-2 text-xs font-bold text-violet-100 transition hover:bg-violet-800 sm:text-sm" aria-expanded="false">👁 Ver palavra em inglês</button>
@@ -167,6 +168,7 @@
     let listenTimer = null;
     let timeLeft = 10;
     let canAnswer = true;
+    let voiceUnavailable = false;
 
     function shuffle(items) {
       const shuffled = [...items];
@@ -188,7 +190,9 @@
       questionIndex = 0;
       score = 0;
       correctCount = 0;
+      voiceUnavailable = false;
       document.getElementById("score-display").textContent = "⭐ 0";
+      document.getElementById("correct-count").textContent = `Respostas certas: 0 / ${roundWords.length}`;
       startScreen.classList.add("hidden");
       endScreen.classList.add("hidden");
       gameScreen.classList.remove("hidden");
@@ -205,21 +209,27 @@
       document.getElementById("question-title").textContent = word.pt;
       document.getElementById("timer-display").classList.add("hidden");
       document.getElementById("typed-answer").value = "";
-      document.getElementById("typed-answer-form").classList.add("hidden");
+      document.getElementById("typed-answer-form").classList.toggle("hidden", !voiceUnavailable);
+      document.getElementById("typed-answer-form").classList.toggle("flex", voiceUnavailable);
       answerBanner.textContent = `Palavra em inglês: ${word.en}`;
       answerBanner.classList.add("hidden");
       document.getElementById("reveal-button").textContent = "👁 Ver palavra em inglês";
       document.getElementById("reveal-button").setAttribute("aria-expanded", "false");
       speakButton.disabled = true;
-      micButton.disabled = false;
-      micButton.classList.remove("mic-listening", "opacity-60", "cursor-not-allowed");
-      micButton.textContent = "🎙️ Falar em inglês";
-      feedback.textContent = "Carrega no microfone e diz a palavra em inglês!";
+      micButton.disabled = voiceUnavailable;
+      micButton.classList.toggle("opacity-60", voiceUnavailable);
+      micButton.classList.toggle("cursor-not-allowed", voiceUnavailable);
+      micButton.classList.remove("mic-listening");
+      micButton.textContent = voiceUnavailable ? "🎙️ Voz indisponível" : "🎙️ Falar em inglês";
+      feedback.textContent = voiceUnavailable
+        ? "O serviço de voz não está disponível nesta partida. Escreve a resposta em inglês."
+        : "Carrega no microfone e diz a palavra em inglês!";
       feedback.className = "text-base font-bold text-indigo-200 sm:text-lg";
       progressBar.style.width = `${(questionIndex / roundWords.length) * 100}%`;
       progressTrack.setAttribute("aria-valuenow", String(questionIndex));
       document.getElementById("next-button").textContent = "Próxima →";
-      document.getElementById("next-button").focus();
+      if (voiceUnavailable) document.getElementById("typed-answer").focus();
+      else document.getElementById("next-button").focus();
     }
 
     function initializeRecognition() {
@@ -227,7 +237,7 @@
       if (!SpeechRecognition) return false;
       const currentRecognition = new SpeechRecognition();
       recognition = currentRecognition;
-      currentRecognition.lang = "en-GB";
+      currentRecognition.lang = "en-US";
       currentRecognition.continuous = false;
       currentRecognition.interimResults = true;
       currentRecognition.onstart = () => {
@@ -251,9 +261,10 @@
       };
       currentRecognition.onresult = (event) => {
         if (recognition !== currentRecognition) return;
-        for (let index = event.resultIndex; index < event.results.length; index++) {
-          if (event.results[index].isFinal) recognizedText += ` ${event.results[index][0].transcript}`;
-        }
+        recognizedText = Array.from(event.results, (result) => result[0]?.transcript || "")
+          .filter(Boolean)
+          .join(" ")
+          .trim();
       };
       currentRecognition.onerror = (event) => {
         if (recognition !== currentRecognition) return;
@@ -261,25 +272,39 @@
       };
       currentRecognition.onend = () => {
         if (recognition !== currentRecognition) return;
+        const speech = recognizedText.trim();
+        const speechError = recognitionError;
+        recognition = null;
         isListening = false;
         clearInterval(listenTimer);
         listenTimer = null;
         document.getElementById("timer-display").classList.add("hidden");
         micButton.classList.remove("mic-listening");
         micButton.textContent = "🎙️ Tentar novamente";
-        if (recognitionError && recognitionError !== "no-speech" && recognitionError !== "aborted") {
+        if (speechError && speechError !== "no-speech" && speechError !== "aborted") {
           speakButton.disabled = false;
-          const message = recognitionError === "not-allowed" || recognitionError === "service-not-allowed"
-            ? "O acesso ao microfone foi bloqueado. Permite o acesso nas definições do navegador."
-            : "Não consegui ouvir bem. Verifica o microfone e tenta novamente.";
-          showFeedback(message, "amber");
+          const errorMessages = {
+            "not-allowed": "O acesso ao microfone foi bloqueado. Permite o acesso nas definições do navegador.",
+            "service-not-allowed": "O navegador não autorizou o serviço de reconhecimento de voz. Verifica as definições de privacidade.",
+            "audio-capture": "Não foi possível aceder ao microfone. Verifica se está ligado e autorizado.",
+            network: "O serviço de voz do navegador devolveu um erro de rede. Experimenta abrir o jogo num Chrome normal; nesta partida, escreve a resposta."
+          };
+          if (speechError === "network") {
+            voiceUnavailable = true;
+            micButton.disabled = true;
+            micButton.classList.add("opacity-60", "cursor-not-allowed");
+            micButton.textContent = "🎙️ Voz indisponível";
+          }
+          const message = errorMessages[speechError] || "Não consegui ouvir bem. Verifica o microfone e tenta novamente.";
+          showTypedFallback(message);
+          if (speechError === "network") document.getElementById("typed-answer").focus();
           return;
         }
-        if (recognizedText.trim()) {
-          validateAnswer(recognizedText);
+        if (speech) {
+          validateAnswer(speech);
         } else {
           speakButton.disabled = false;
-          showFeedback(timeLeft <= 0 ? "O tempo terminou. Tenta outra vez!" : "Não detetei fala. Tenta novamente!", "amber");
+          showTypedFallback(timeLeft <= 0 ? "O tempo terminou. Tenta outra vez!" : "Não detetei fala. Tenta novamente ou escreve a resposta.");
         }
       };
       return true;
@@ -288,6 +313,13 @@
     function showFeedback(message, color) {
       feedback.textContent = message;
       feedback.className = `text-base font-bold sm:text-lg ${color === "green" ? "text-emerald-300" : color === "amber" ? "text-amber-200" : "text-indigo-200"}`;
+    }
+
+    function showTypedFallback(message) {
+      const form = document.getElementById("typed-answer-form");
+      form.classList.remove("hidden");
+      form.classList.add("flex");
+      showFeedback(message, "amber");
     }
 
     function validateAnswer(spoken) {
@@ -305,21 +337,25 @@
       correctCount++;
       score += 10;
       document.getElementById("score-display").textContent = `⭐ ${score}`;
+      document.getElementById("correct-count").textContent = `Respostas certas: ${correctCount} / ${roundWords.length}`;
       answerBanner.textContent = `Muito bem! ${word.en.toUpperCase()}! ⭐`;
       answerBanner.classList.remove("hidden");
       document.getElementById("reveal-button").setAttribute("aria-expanded", "true");
       document.getElementById("reveal-button").textContent = "✓ Palavra encontrada";
-      showFeedback("Correto! Excelente pronúncia! ⭐", "green");
+      showFeedback("Correto! Excelente trabalho! ⭐", "green");
       progressBar.style.width = `${((questionIndex + 1) / roundWords.length) * 100}%`;
       progressTrack.setAttribute("aria-valuenow", String(questionIndex + 1));
       document.getElementById("next-button").focus();
     }
 
     function startListening() {
-      if (!recognition && !initializeRecognition()) {
-        document.getElementById("typed-answer-form").classList.remove("hidden");
+      if (voiceUnavailable) {
         document.getElementById("typed-answer").focus();
-        showFeedback("O reconhecimento de voz não está disponível. Escreve a resposta em inglês.", "amber");
+        return;
+      }
+      if (!recognition && !initializeRecognition()) {
+        showTypedFallback("O reconhecimento de voz não está disponível. Escreve a resposta em inglês.");
+        document.getElementById("typed-answer").focus();
         return;
       }
       if (isListening) {
@@ -331,7 +367,8 @@
       try {
         recognition.start();
       } catch {
-        showFeedback("Não consegui iniciar o microfone. Tenta novamente.", "amber");
+        recognition = null;
+        showTypedFallback("Não consegui iniciar o microfone. Tenta novamente ou escreve a resposta.");
       }
     }
 
@@ -374,7 +411,7 @@
       endScreen.classList.remove("hidden");
       endScreen.classList.add("flex");
       document.getElementById("final-score").textContent = `${score} pontos`;
-      document.getElementById("accuracy-text").textContent = `Respondeste corretamente a ${correctCount} de ${roundWords.length} palavras.`;
+      document.getElementById("accuracy-text").textContent = `Respostas certas: ${correctCount} / ${roundWords.length}.`;
       document.getElementById("final-emoji").textContent = correctCount === roundWords.length ? "🏆" : "🎙️";
       document.getElementById("replay-button").focus();
     }
